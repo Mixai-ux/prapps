@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI PM Practice Session — Prapp</title>
+<style>
+/* ═══════════════════════════════════════════════════
+   MEETMIND DESIGN SYSTEM — shared across all pages
+   ═══════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+
+:root {
+  /* Palette */
+  --sky0:#f0f7ff; --sky1:#dceffe; --sky2:#b8dffe; --sky3:#6cb8f6;
+  --ink:#0d1f3c;  --ink2:#1e3a5f; --mid:#4a6fa5;
+  --acc:#0057ff;  --acc2:#00c4ff;
+  --green:#00c48c; --orange:#ff7a2f; --red:#ff4d6d; --purple:#7c3aed; --gold:#f59e0b;
+  /* Segment accent colors */
+  --seg-interview:#0057ff;
+  --seg-sales:#00c48c;
+  --seg-investor:#7c3aed;
+  --seg-negotiation:#ff7a2f;
+  --seg-discovery:#f59e0b;
+  /* Surfaces */
+  --card:rgba(255,255,255,0.80);
+  --card-b:rgba(255,255,255,0.94);
+  --shadow:0 4px 28px rgba(13,31,60,.09);
+  --shadow-lg:0 14px 60px rgba(0,87,255,.13);
+  /* Shapes */
+  --r:18px; --r-sm:10px; --r-xs:7px;
+  --nav-h:62px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--sky0);color:var(--ink);overflow-x:hidden;}
+
+/* BG mesh */
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 8%,rgba(180,220,255,.55) 0%,transparent 60%),
+    radial-gradient(ellipse 55% 45% at 85% 0%,rgba(108,184,246,.32) 0%,transparent 55%),
+    radial-gradient(ellipse 65% 65% at 50% 100%,rgba(220,239,254,.65) 0%,transparent 60%),
+    linear-gradient(168deg,#e8f4ff 0%,#f5faff 40%,#edf6ff 100%);}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:200;height:var(--nav-h);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;
+  background:rgba(240,247,255,.88);backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(184,223,254,.45);}
+
+.logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;
+  color:var(--ink);display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0;}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--acc);
+  animation:pulse 2s ease-in-out infinite;}
+
+.nav-pills{display:flex;align-items:center;gap:2px;
+  background:rgba(13,31,60,.055);border-radius:50px;padding:3px;}
+.nav-pill{display:flex;align-items:center;gap:5px;padding:6px 14px;
+  border-radius:50px;border:none;background:transparent;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
+  color:var(--ink2);cursor:pointer;text-decoration:none;
+  transition:background .15s,color .15s;white-space:nowrap;}
+.nav-pill:hover{background:rgba(255,255,255,.7);}
+.nav-pill.active{background:#fff;color:var(--seg-color,var(--acc));
+  box-shadow:0 2px 10px rgba(13,31,60,.1);}
+.nav-pill .pi{font-size:13px;}
+
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.nav-txt-link{padding:6px 12px;border-radius:8px;font-size:13px;
+  color:var(--ink2);text-decoration:none;transition:background .15s,color .15s;}
+.nav-txt-link:hover{background:rgba(0,87,255,.07);color:var(--acc);}
+
+.nav-profile{display:flex;align-items:center;gap:6px;padding:6px 14px;
+  border-radius:50px;background:var(--card);border:1px solid var(--card-b);
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--ink);
+  cursor:pointer;box-shadow:var(--shadow);text-decoration:none;
+  transition:background .15s,transform .15s;}
+.nav-profile:hover{background:rgba(255,255,255,.95);transform:translateY(-1px);}
+.nav-av{width:22px;height:22px;border-radius:50%;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;color:#fff;font-weight:700;}
+
+.btn-nav-cta{padding:8px 20px;border-radius:50px;
+  background:var(--ink);color:#fff;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:500;
+  text-decoration:none;transition:background .2s,transform .15s;white-space:nowrap;}
+.btn-nav-cta:hover{background:var(--acc);transform:translateY(-1px);}
+
+/* ── BUTTONS ── */
+.btn-p{display:inline-flex;align-items:center;gap:9px;
+  background:var(--ink);color:#fff;padding:13px 28px;border-radius:50px;border:none;
+  font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;text-decoration:none;
+  box-shadow:0 6px 28px rgba(0,87,255,.20);transition:background .2s,transform .15s,box-shadow .2s;}
+.btn-p:hover{background:var(--acc);transform:translateY(-2px);box-shadow:0 10px 36px rgba(0,87,255,.28);}
+.btn-p .arr{transition:transform .2s;}
+.btn-p:hover .arr{transform:translateX(4px);}
+.btn-s{display:inline-flex;align-items:center;gap:7px;
+  background:var(--card);color:var(--ink);padding:13px 24px;border-radius:50px;
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:400;cursor:pointer;
+  border:1px solid var(--card-b);text-decoration:none;box-shadow:var(--shadow);
+  transition:background .2s,transform .15s;}
+.btn-s:hover{background:rgba(255,255,255,.95);transform:translateY(-1px);}
+
+/* ── SECTION CHROME ── */
+.sec-tag{display:inline-block;background:rgba(0,87,255,.08);color:var(--acc);
+  padding:4px 13px;border-radius:50px;font-size:11.5px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;}
+.sec-h{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;
+  font-size:clamp(26px,3.6vw,42px);color:var(--ink);line-height:1.13;}
+.sec-sub{margin-top:10px;font-size:16px;color:var(--mid);font-weight:300;
+  max-width:500px;margin-left:auto;margin-right:auto;}
+
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);
+  box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s;}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+
+/* ── FOOTER ── */
+footer{position:relative;z-index:1;padding:24px 5%;
+  border-top:1px solid rgba(184,223,254,.4);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+footer,.footer-links a{font-size:13px;color:var(--mid);}
+.footer-links{display:flex;gap:20px;}
+.footer-links a{text-decoration:none;transition:color .2s;}
+.footer-links a:hover{color:var(--acc);}
+
+/* ── FADE IN ── */
+.fi{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease;}
+.fi.vis{opacity:1;transform:translateY(0);}
+
+/* ── ANIMATIONS ── */
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.6}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── PROFILE MODAL ── */
+.modal-ov{position:fixed;inset:0;z-index:1000;
+  background:rgba(13,31,60,.42);backdrop-filter:blur(8px);
+  display:flex;align-items:flex-start;justify-content:flex-end;
+  padding:70px 20px 0;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-ov.open{opacity:1;pointer-events:all;}
+.profile-modal{width:370px;background:#fff;border-radius:20px;
+  box-shadow:0 24px 80px rgba(13,31,60,.25);overflow:hidden;
+  transform:translateY(-10px);transition:transform .25s cubic-bezier(.4,0,.2,1);}
+.modal-ov.open .profile-modal{transform:translateY(0);}
+.pm-head{background:var(--ink);padding:24px 22px 18px;position:relative;}
+.pm-close{position:absolute;top:13px;right:14px;
+  background:rgba(255,255,255,.12);border:none;width:27px;height:27px;
+  border-radius:50%;color:#fff;font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:background .15s;}
+.pm-close:hover{background:rgba(255,255,255,.22);}
+.pm-av{width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;color:#fff;font-weight:700;margin-bottom:10px;
+  border:3px solid rgba(255,255,255,.18);}
+.pm-name{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:#fff;margin-bottom:2px;}
+.pm-role{font-size:12.5px;color:rgba(255,255,255,.55);}
+.pm-stats{display:grid;grid-template-columns:repeat(3,1fr);background:var(--sky0);
+  border-bottom:1px solid rgba(184,223,254,.4);}
+.pms{padding:13px 0;text-align:center;border-right:1px solid rgba(184,223,254,.4);}
+.pms:last-child{border-right:none;}
+.pms-v{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;color:var(--ink);}
+.pms-l{font-size:10.5px;color:var(--mid);margin-top:2px;}
+.pm-tok{margin:10px 18px 4px;background:rgba(0,87,255,.07);border:1px solid rgba(0,87,255,.12);
+  border-radius:10px;padding:11px 13px;}
+.pm-tok-h{font-size:12px;color:var(--mid);margin-bottom:7px;display:flex;justify-content:space-between;}
+.pm-tok-h span:last-child{font-weight:600;color:var(--acc);}
+.pm-tok-track{height:5px;background:rgba(0,87,255,.12);border-radius:3px;overflow:hidden;}
+.pm-tok-fill{height:100%;width:62%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:3px;}
+.pm-tok-note{font-size:11px;color:var(--mid);margin-top:6px;}
+.pm-tok-note span{color:var(--acc);cursor:pointer;font-weight:500;}
+.pm-sl{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);
+  padding:8px 18px 5px;font-weight:500;}
+.pm-row{display:flex;align-items:center;justify-content:space-between;
+  padding:10px 18px;cursor:pointer;transition:background .15s;text-decoration:none;}
+.pm-row:hover{background:var(--sky0);}
+.pm-row-l{display:flex;align-items:center;gap:11px;}
+.pm-ri{width:32px;height:32px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;font-size:15px;}
+.pm-ri.blue{background:rgba(0,87,255,.09);}
+.pm-ri.green{background:rgba(0,196,140,.09);}
+.pm-ri.orange{background:rgba(255,122,47,.09);}
+.pm-ri.purple{background:rgba(124,58,237,.09);}
+.pm-rt{font-size:13.5px;font-weight:500;color:var(--ink);}
+.pm-rs{font-size:11px;color:var(--mid);}
+.pm-arr{font-size:13px;color:rgba(74,111,165,.4);}
+.pm-div{height:1px;background:rgba(184,223,254,.35);margin:6px 0;}
+.pm-foot{padding:12px 18px 18px;border-top:1px solid rgba(184,223,254,.35);display:flex;gap:8px;}
+.pm-logout{flex:1;padding:9px;border-radius:8px;border:1px solid rgba(184,223,254,.6);
+  background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--mid);cursor:pointer;
+  transition:background .15s,color .15s;}
+.pm-logout:hover{background:var(--sky0);color:var(--ink);}
+.pm-topup{flex:1;padding:9px;border-radius:8px;background:var(--acc);color:#fff;border:none;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:background .15s;}
+.pm-topup:hover{background:#0048d4;}
+
+/* ── NAV: SECOND BAR (submenu) ── */
+.subnav{position:sticky;top:62px;z-index:199;height:38px;
+  display:none;align-items:center;justify-content:center;gap:4px;
+  background:rgba(240,247,255,.95);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(184,223,254,.5);padding:0 24px;}
+.subnav.visible{display:flex;}
+.subnav-home{display:flex;align-items:center;gap:5px;padding:4px 12px;
+  border-radius:7px;font-size:12.5px;font-weight:400;color:var(--mid);
+  text-decoration:none;transition:background .15s,color .15s;
+  border-right:1px solid rgba(184,223,254,.6);margin-right:6px;padding-right:18px;}
+.subnav-home:hover{color:var(--acc);background:rgba(0,87,255,.05);}
+.subnav-home svg{flex-shrink:0;}
+.sub-div{width:1px;height:16px;background:rgba(184,223,254,.7);margin:0 4px;}
+.sub-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;
+  border-radius:7px;font-size:12.5px;font-weight:500;color:var(--mid);
+  text-decoration:none;transition:background .15s,color .15s;white-space:nowrap;}
+.sub-pill:hover{background:rgba(0,87,255,.07);color:var(--acc);}
+.sub-pill.sub-active{background:rgba(0,87,255,.1);color:var(--acc);}
+.sub-fill{flex:1;}
+
+/* ── NAV: SEARCH BUTTON ── */
+.nav-search-btn{width:32px;height:32px;border-radius:8px;border:none;
+  background:transparent;color:var(--mid);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s,color .15s;flex-shrink:0;}
+.nav-search-btn:hover{background:rgba(0,87,255,.07);color:var(--acc);}
+
+/* ── SEARCH OVERLAY ── */
+.search-overlay{position:fixed;inset:0;z-index:500;
+  background:rgba(13,31,60,.42);backdrop-filter:blur(10px);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding-top:90px;padding-left:16px;padding-right:16px;
+  opacity:0;pointer-events:none;transition:opacity .18s;}
+.search-overlay.open{opacity:1;pointer-events:all;}
+.search-modal{width:100%;max-width:560px;background:#fff;
+  border-radius:14px;box-shadow:0 20px 80px rgba(13,31,60,.22);
+  overflow:hidden;transform:translateY(-10px);
+  transition:transform .2s cubic-bezier(.4,0,.2,1);}
+.search-overlay.open .search-modal{transform:translateY(0);}
+.search-input-row{display:flex;align-items:center;gap:10px;
+  padding:13px 16px;border-bottom:1px solid rgba(184,223,254,.45);}
+.search-input{flex:1;border:none;outline:none;
+  font-family:'DM Sans',sans-serif;font-size:15px;color:var(--ink);
+  background:transparent;}
+.search-input::placeholder{color:var(--mid);}
+.search-close{padding:3px 9px;border-radius:6px;
+  border:1px solid rgba(184,223,254,.7);background:transparent;
+  font-size:11.5px;color:var(--mid);cursor:pointer;
+  font-family:'DM Sans',sans-serif;white-space:nowrap;}
+.search-close:hover{background:var(--sky0);}
+.search-results{max-height:360px;overflow-y:auto;padding:6px 0;}
+.search-hint{padding:12px 16px;font-size:13px;color:var(--mid);}
+.search-empty{padding:18px;text-align:center;font-size:13.5px;color:var(--mid);}
+.search-section-label{padding:7px 16px 3px;font-size:10.5px;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--mid);font-weight:500;}
+.search-result{display:flex;align-items:flex-start;gap:11px;
+  padding:10px 16px;cursor:pointer;text-decoration:none;
+  transition:background .12s;}
+.search-result:hover{background:var(--sky0);}
+.sr-icon{font-size:17px;flex-shrink:0;margin-top:1px;}
+.sr-title{font-size:13.5px;font-weight:500;color:var(--ink);margin-bottom:2px;}
+.sr-desc{font-size:12px;color:var(--mid);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){.nav-pills{display:none;}}
+@media(max-width:640px){
+  .nav-right .nav-txt-link{display:none;}
+  .btn-p,.btn-s{padding:11px 20px;font-size:14px;}
+}
+
+/* page-level accent */
+:root{--seg-color:var(--acc);}
+
+.prep-layout{position:relative;z-index:1;display:grid;grid-template-columns:220px 1fr;
+  gap:0;min-height:calc(100vh - var(--nav-h));}
+.prep-sidebar{background:rgba(255,255,255,.7);border-right:1px solid rgba(184,223,254,.5);
+  padding:20px 0;position:sticky;top:var(--nav-h);height:calc(100vh - var(--nav-h));overflow-y:auto;}
+.prep-sb-head{padding:0 18px 14px;border-bottom:1px solid rgba(184,223,254,.4);margin-bottom:8px;}
+.prep-sb-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--ink);}
+.prep-sb-sub{font-size:11.5px;color:var(--mid);margin-top:3px;}
+.prep-nav-item{display:flex;align-items:center;gap:9px;padding:9px 18px;
+  cursor:pointer;font-size:13.5px;color:var(--ink2);transition:background .15s,color .15s;
+  text-decoration:none;border-left:2px solid transparent;}
+.prep-nav-item:hover{background:rgba(0,87,255,.05);color:var(--acc);}
+.prep-nav-item.active{background:rgba(0,87,255,.07);color:var(--acc);
+  border-left-color:var(--acc);font-weight:500;}
+.prep-content{padding:28px 40px;max-width:900px;}
+.prep-section{display:none;}
+.prep-section.active{display:block;}
+.prep-h{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:26px;color:var(--ink);margin-bottom:6px;}
+.prep-sub{font-size:15px;color:var(--mid);margin-bottom:24px;}
+/* STAR cards */
+.star-cards{display:flex;flex-direction:column;gap:14px;}
+.star-c{background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);overflow:hidden;}
+.star-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;}
+.star-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--ink);}
+.star-company{font-size:12px;color:var(--mid);margin-top:2px;}
+.star-exp{font-size:20px;color:var(--mid);transition:transform .2s;}
+.star-c.open .star-exp{transform:rotate(180deg);}
+.star-body{display:none;padding:0 20px 18px;border-top:1px solid rgba(184,223,254,.4);}
+.star-c.open .star-body{display:block;}
+.star-row{display:grid;grid-template-columns:70px 1fr;gap:10px;margin-bottom:10px;}
+.star-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--acc);font-weight:600;padding-top:3px;}
+.star-val{font-size:13.5px;line-height:1.6;color:var(--ink2);}
+.star-metric{display:inline-block;background:rgba(0,87,255,.06);border:1px solid rgba(0,87,255,.15);
+  color:var(--acc);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;margin-top:6px;}
+/* Q&A */
+.qa-cards{display:flex;flex-direction:column;gap:10px;}
+.qa-c{background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);overflow:hidden;}
+.qa-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;}
+.qa-q{font-size:14.5px;font-weight:500;color:var(--ink);}
+.qa-diff{font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;}
+.qa-diff.h{background:rgba(255,77,109,.1);color:var(--red);}
+.qa-diff.m{background:rgba(255,122,47,.1);color:var(--orange);}
+.qa-diff.e{background:rgba(0,87,255,.07);color:var(--acc);}
+.qa-body{display:none;padding:0 18px 16px;border-top:1px solid rgba(184,223,254,.4);}
+.qa-c.open .qa-body{display:block;}
+.qa-hint{font-size:13px;color:var(--mid);line-height:1.65;margin-top:10px;}
+.qa-ans-box{background:rgba(0,87,255,.05);border:1px solid rgba(0,87,255,.12);
+  border-radius:10px;padding:12px 14px;margin-top:10px;font-size:13.5px;line-height:1.65;color:var(--ink2);}
+/* Voice practice */
+.voice-panel{background:var(--ink);border-radius:var(--r);padding:28px;text-align:center;color:#fff;margin-bottom:16px;}
+.voice-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:22px;margin-bottom:8px;}
+.voice-desc{font-size:14px;color:rgba(255,255,255,.6);margin-bottom:22px;}
+.voice-btn{display:inline-flex;align-items:center;gap:9px;
+  background:var(--acc);color:#fff;padding:13px 28px;border-radius:50px;border:none;
+  font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;
+  box-shadow:0 6px 28px rgba(0,87,255,.3);transition:background .2s,transform .15s;}
+.voice-btn:hover{background:#0048d4;transform:translateY(-2px);}
+/* Formula cheat */
+.formula{background:rgba(0,87,255,.06);border:1px solid rgba(0,87,255,.14);
+  border-radius:var(--r);padding:18px 20px;margin-bottom:20px;}
+.formula-ttl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--acc);font-weight:600;margin-bottom:10px;}
+.formula-steps{display:flex;gap:8px;flex-wrap:wrap;}
+.formula-step{background:#fff;border:1px solid rgba(0,87,255,.15);border-radius:8px;padding:7px 13px;font-size:13px;color:var(--ink);}
+.formula-step strong{color:var(--acc);}
+@media(max-width:768px){
+  /* Layout: stack vertically */
+  .prep-layout{grid-template-columns:1fr;}
+
+  /* Sidebar becomes horizontal tab bar on top */
+  .prep-sidebar{
+    position:sticky;top:var(--nav-h);z-index:100;
+    height:auto;width:100%;
+    border-right:none;border-bottom:1px solid rgba(184,223,254,.5);
+    padding:0;
+    display:flex;flex-direction:column;
+  }
+  .prep-sidebar-header{display:none;}
+
+  /* Nav items become horizontal scrollable tabs */
+  .prep-nav-items{
+    display:flex;flex-direction:row;overflow-x:auto;gap:0;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch;
+    padding:0 8px;
+  }
+  .prep-nav-items::-webkit-scrollbar{display:none;}
+
+  .prep-nav-item{
+    padding:10px 14px;border-radius:0;white-space:nowrap;
+    font-size:13px;flex-shrink:0;
+    border-bottom:2px solid transparent;
+  }
+  .prep-nav-item.active{
+    border-bottom:2px solid var(--acc);
+    background:transparent;
+  }
+
+  /* Hide external links from tab bar */
+  .prep-nav-external{display:none;}
+
+  /* Content padding tighter on mobile */
+  .prep-content{padding:16px 16px 40px;}
+
+  /* Score grid 1 col on very small */
+  .prep-content [style*="grid-template-columns:1fr 1fr"]{
+    grid-template-columns:1fr!important;
+  }
+}
+
+
+/* ═══ MOBILE-FIRST RESPONSIVE ═══ */
+@media(max-width:768px){
+  .nav-pills{display:none;}
+  .nav-profile{display:none;}
+  .btn-nav-cta{padding:7px 14px;font-size:13px;}
+  .hamburger{display:flex;}
+}
+@media(min-width:769px){
+  .hamburger{display:none;}
+  .mobile-menu{display:none!important;}
+}
+.hamburger{flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:8px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--ink);border-radius:2px;transition:.2s;}
+.mobile-menu{position:fixed;top:var(--nav-h);left:0;right:0;z-index:199;
+  background:rgba(240,247,255,.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(180,210,255,.3);
+  padding:16px 5%;flex-direction:column;gap:4px;display:none;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{padding:12px 16px;border-radius:12px;font-size:15px;font-weight:500;
+  color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px;}
+.mobile-menu a:hover,.mobile-menu a.active{background:rgba(0,87,255,.08);color:var(--acc);}
+.mobile-menu-cta{margin-top:4px;padding:12px!important;background:var(--acc)!important;
+  color:#fff!important;border-radius:12px!important;justify-content:center!important;font-weight:600!important;}
+
+</style>
+<script src="https://elevenlabs.io/convai-widget/index.js" async></script>
+</head>
+<body>
+<div class="bg-mesh"></div>
+<nav role="banner">
+  <a href="index.html" class="logo"><span class="logo-dot" aria-hidden="true"></span>Prapp</a>
+  <div class="nav-pills" role="navigation" aria-label="Main navigation">
+  <a href="index.html" class="nav-pill"><span class="pi">🏠</span>Home</a>
+  <a href="interview.html" class="nav-pill"><span class="pi">🎯</span>Practice</a>
+  <a href="peers.html" class="nav-pill"><span class="pi">👥</span>Peer Finder</a>
+  <a href="index.html#pricing" class="nav-pill"><span class="pi">💰</span>Pricing</a>
+</div>
+  <div class="nav-right">
+    <a href="index.html#pricing" class="nav-txt-link">Pricing</a>
+    <button class="nav-search-btn" onclick="toggleSearch()" aria-label="Search" title="Search (Cmd+K)">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </button>
+    <button class="nav-profile" onclick="toggleProfile()" aria-label="My profile"><div class="nav-av" aria-hidden="true">MS</div>My Profile</button>
+    <a href="prep.html" target="_blank" class="btn-nav-cta">🎤 Start Practice</a>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">🏠 Home</a>
+  <a href="interview.html">🎯 Practice</a>
+  <a href="peers.html">👥 Peer Finder</a>
+  <a href="index.html#pricing">💰 Pricing</a>
+  <a href="prep.html" class="mobile-menu-cta">🎤 Start Practice</a>
+</div>
+<div class="subnav visible" role="navigation" aria-label="Section navigation">
+  <a href="index.html" class="subnav-home">
+    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    All use cases
+  </a>
+  <span class="sub-div"></span>
+  <a href="peers.html" class="sub-pill">👥 Peer Finder</a>
+  <a href="prep.html" target="_blank" class="sub-pill">📋 Prep Suite</a>
+  <a href="prep.html?mode=interview" class="sub-pill">📖 Study</a>
+</div>
+<div class="search-overlay" id="searchOverlay" role="dialog" aria-modal="true" aria-label="Search" onclick="if(event.target===this)toggleSearch()">
+  <div class="search-modal">
+    <div class="search-input-row">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search features, use cases, pricing…" oninput="runSearch(this.value)" aria-label="Search Prapp">
+      <button class="search-close" onclick="toggleSearch()">Esc</button>
+    </div>
+    <div class="search-results" id="searchResults" role="listbox">
+      <div class="search-hint">Try: "objection", "STAR", "emotion", "voice practice", "pricing"</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-ov" id="profileModal" onclick="if(event.target===this)toggleProfile()">
+  <div class="profile-modal">
+    <div class="pm-head">
+      <button class="pm-close" onclick="toggleProfile()">✕</button>
+      <div class="pm-av">MS</div>
+      <div class="pm-name">Michael Shineev</div>
+      <div class="pm-role">Product Manager · 8yr exp</div>
+    </div>
+    <div class="pm-stats">
+      <div class="pms"><div class="pms-v">12</div><div class="pms-l">Sessions</div></div>
+      <div class="pms"><div class="pms-v">93</div><div class="pms-l">Tokens left</div></div>
+      <div class="pms"><div class="pms-v">68</div><div class="pms-l">Avg score</div></div>
+    </div>
+    <div class="pm-tok">
+      <div class="pm-tok-h"><span>Session tokens</span><span>93 / 150</span></div>
+      <div class="pm-tok-track"><div class="pm-tok-fill"></div></div>
+      <div class="pm-tok-note">~9 sessions remaining · <span>Top up →</span></div>
+    </div>
+    <div style="padding:4px 0">
+      <div class="pm-sl">Quick Launch</div>
+      <a href="prep.html" target="_blank" class="pm-row">
+        <div class="pm-row-l"><div class="pm-ri blue">⚡</div><div><div class="pm-rt">Live Copilot</div><div class="pm-rs">Real-time answers + emotion read</div></div></div>
+        <div class="pm-arr">›</div>
+      </a>
+      <a href="prep.html" target="_blank" class="pm-row">
+        <div class="pm-row-l"><div class="pm-ri green">📋</div><div><div class="pm-rt">Prep Suite</div><div class="pm-rs">STAR stories · Q&A · Voice practice</div></div></div>
+        <div class="pm-arr">›</div>
+      </a>
+      <div class="pm-div"></div>
+      <div class="pm-sl">My Segments</div>
+      <a href="interview.html" class="pm-row">
+        <div class="pm-row-l"><div class="pm-ri blue">🎯</div><div><div class="pm-rt">Interview Prep</div><div class="pm-rs">Last: TryHackMe · Score 62</div></div></div>
+        <div class="pm-arr">›</div>
+      </a>
+      <a href="sales.html" class="pm-row">
+        <div class="pm-row-l"><div class="pm-ri green">👥</div><div><div class="pm-rt">Find Peers</div><div class="pm-rs">Match by domain · get reference</div></div></div>
+        <div class="pm-arr">›</div>
+      </a>
+      <a href="index.html#pricing" class="pm-row">
+        <div class="pm-row-l"><div class="pm-ri purple">🎟</div><div><div class="pm-rt">Buy Sessions</div><div class="pm-rs">From $4.99 · no expiry</div></div></div>
+        <div class="pm-arr">›</div>
+      </a>
+    </div>
+    <div class="pm-foot">
+      <button class="pm-logout">Sign out</button>
+      <button class="pm-topup">+ Buy tokens</button>
+    </div>
+  </div>
+</div>
+
+<div class="prep-layout">
+  <!-- Sidebar nav -->
+  <div class="prep-sidebar">
+    <div class="prep-sb-head">
+      <div class="prep-sb-title" id="prepModeTitle">Prep Suite</div>
+      <div class="prep-sb-sub" id="prepModeSub">Prapp</div>
+    </div>
+    <a class="prep-nav-item active" data-sec="overview" onclick="switchSection('overview')">📋 Overview</a>
+    <a class="prep-nav-item" data-sec="star" onclick="switchSection('star')">⭐ STAR Stories</a>
+    <a class="prep-nav-item" data-sec="qa" onclick="switchSection('qa')">❓ Q&A Bank</a>
+    <a class="prep-nav-item" data-sec="voice" onclick="switchSection('voice')">🎤 Voice Practice</a>
+    <a class="prep-nav-item" data-sec="brief" onclick="switchSection('brief')">📄 Call Brief</a>
+    <div style="height:1px;background:rgba(184,223,254,.4);margin:10px 0;"></div>
+    <a class="prep-nav-item" href="peers.html">👥 Find Peers →</a>
+    <a class="prep-nav-item" href="index.html">🏠 Back to Home</a>
+  </div>
+
+  <!-- Content -->
+  <div class="prep-content">
+
+    <!-- Overview -->
+    <div class="prep-section active" id="sec-overview">
+      <div class="prep-h">You're 20 minutes from ready.</div>
+      <div class="prep-sub">Work through each section in order. Then launch the live copilot.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;">
+        <div style="background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);padding:20px;cursor:pointer;" onclick="switchSection('star')">
+          <div style="font-size:24px;margin-bottom:8px;">⭐</div>
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:5px;">STAR Stories</div>
+          <div style="font-size:13px;color:var(--mid);">5 ready-to-use stories with key metrics highlighted</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);padding:20px;cursor:pointer;" onclick="switchSection('qa')">
+          <div style="font-size:24px;margin-bottom:8px;">❓</div>
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:5px;">Q&A Bank</div>
+          <div style="font-size:13px;color:var(--mid);">12 likely questions with answer frameworks</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);padding:20px;cursor:pointer;" onclick="switchSection('voice')">
+          <div style="font-size:24px;margin-bottom:8px;">🎤</div>
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:5px;">Voice Practice</div>
+          <div style="font-size:13px;color:var(--mid);">AI interviewer · Real-time feedback</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);padding:20px;cursor:pointer;" onclick="launchCopilotFromPrep()">
+          <div style="font-size:24px;margin-bottom:8px;">⚡</div>
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:5px;">Find Practice Peer</div>
+          <div style="font-size:13px;color:var(--mid);">Match with an AI PM peer in your domain</div>
+        </div>
+      </div>
+      <div class="formula">
+        <div class="formula-ttl">Answer Formula — use this in every answer</div>
+        <div class="formula-steps">
+          <div class="formula-step"><strong>S</strong> 1 sentence context</div>
+          <div class="formula-step"><strong>T</strong> Your specific role</div>
+          <div class="formula-step"><strong>A</strong> 2–3 actions max</div>
+          <div class="formula-step"><strong>R</strong> Land on ONE metric → stop</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAR Stories -->
+    <div class="prep-section" id="sec-star">
+      <div class="prep-h">Your STAR Stories</div>
+      <div class="prep-sub">Expand each. Read the metric line. Know it cold.</div>
+      <div class="formula" style="margin-bottom:20px;">
+        <div class="formula-ttl">Answer Formula</div>
+        <div class="formula-steps">
+          <div class="formula-step"><strong>S</strong> Context (1 sentence)</div>
+          <div class="formula-step"><strong>T</strong> Your role specifically</div>
+          <div class="formula-step"><strong>A</strong> 2–3 actions max</div>
+          <div class="formula-step"><strong>R</strong> Metric → STOP</div>
+        </div>
+      </div>
+      <div class="star-cards">
+        <div class="star-c">
+          <div class="star-hd">
+            <div><div class="star-title">Sephora — Conversion & Mobile App</div><div class="star-company">SEPHORA (LVMH) · 2019–2022</div></div>
+            <div class="star-exp">▼</div>
+          </div>
+          <div class="star-body">
+            <div class="star-row"><div class="star-lbl">S</div><div class="star-val">Sephora's e-commerce and mobile app had no unified omnichannel experience — orders, loyalty, and services worked in silos.</div></div>
+            <div class="star-row"><div class="star-lbl">T</div><div class="star-val">I was the Product Manager owning the full e-commerce and native iOS/Android app roadmap for the Russian region.</div></div>
+            <div class="star-row"><div class="star-lbl">A</div><div class="star-val">Rebuilt the product discovery (PLP/PDP, filters, checkout), launched Click&Collect across 120 stores, introduced gamification and loyalty mechanics, and ran continuous customer development interviews.</div></div>
+            <div class="star-row"><div class="star-lbl">R</div><div class="star-val"><span class="star-metric">+50% conversion rate</span> <span class="star-metric">+20% retention</span> <span class="star-metric">Top 2 app nationally</span></div></div>
+          </div>
+        </div>
+        <div class="star-c">
+          <div class="star-hd">
+            <div><div class="star-title">Smart-Reply.AI — LLM Product from scratch</div><div class="star-company">Smart-Reply.AI · 2022–2025</div></div>
+            <div class="star-exp">▼</div>
+          </div>
+          <div class="star-body">
+            <div class="star-row"><div class="star-lbl">S</div><div class="star-val">Marketplace resellers on Wildberries/Ozon were drowning in support queries — no affordable 24/7 solution existed.</div></div>
+            <div class="star-row"><div class="star-lbl">T</div><div class="star-val">I owned full product discovery, architecture decisions, and delivery of an AI customer support agent.</div></div>
+            <div class="star-row"><div class="star-lbl">A</div><div class="star-val">Interviewed 40 resellers, selected OpenAI + RAG (Pinecone), built intent classification with BERT, implemented fine-tuning feedback loop, launched blue-green deployments.</div></div>
+            <div class="star-row"><div class="star-lbl">R</div><div class="star-val"><span class="star-metric">FCR +30%</span> <span class="star-metric">CSAT +25%</span> <span class="star-metric">AI adoption +30%</span></div></div>
+          </div>
+        </div>
+        <div class="star-c">
+          <div class="star-hd">
+            <div><div class="star-title">Castorama — E-commerce launch 0→revenue</div><div class="star-company">Castorama (Kingfisher) · 2018–2019</div></div>
+            <div class="star-exp">▼</div>
+          </div>
+          <div class="star-body">
+            <div class="star-row"><div class="star-lbl">S</div><div class="star-val">Castorama Russia had zero e-commerce presence — a retail giant with no online revenue channel.</div></div>
+            <div class="star-row"><div class="star-lbl">T</div><div class="star-val">I was Web PM leading the full build, from platform selection to go-live and team training.</div></div>
+            <div class="star-row"><div class="star-lbl">A</div><div class="star-val">Launched e-commerce platform with delivery + Click&Collect, redesigned PLP/PDP/checkout, built analytics stack (GA, Power BI, Data Studio), ran UX research cycles.</div></div>
+            <div class="star-row"><div class="star-lbl">R</div><div class="star-val"><span class="star-metric">0 → 4% offline turnover</span> <span class="star-metric">CR +58%</span></div></div>
+          </div>
+        </div>
+        <div class="star-c">
+          <div class="star-hd">
+            <div><div class="star-title">Remmers — B2C pioneer in B2B company</div><div class="star-company">Remmers GmbH · 2015–2018</div></div>
+            <div class="star-exp">▼</div>
+          </div>
+          <div class="star-body">
+            <div class="star-row"><div class="star-lbl">S</div><div class="star-val">Remmers Group had never run direct B2C — all revenue was wholesale/B2B with low brand awareness.</div></div>
+            <div class="star-row"><div class="star-lbl">T</div><div class="star-val">I proposed and led the first B2C e-commerce experiment for the Russian subsidiary.</div></div>
+            <div class="star-row"><div class="star-lbl">A</div><div class="star-val">Built the platform from scratch, launched omnichannel services, implemented SERM, created custom mini-CRM, built segmented email marketing.</div></div>
+            <div class="star-row"><div class="star-lbl">R</div><div class="star-val"><span class="star-metric">0 → 9% offline turnover</span> <span class="star-metric">Brand +21%</span> <span class="star-metric">Sales +103%</span></div></div>
+          </div>
+        </div>
+        <div class="star-c" style="border-color:rgba(255,122,47,.3)">
+          <div class="star-hd">
+            <div><div class="star-title">⚠ B2C→B2B bridge story (practice this one!)</div><div class="star-company">Sephora mobile app → enterprise pitch</div></div>
+            <div class="star-exp">▼</div>
+          </div>
+          <div class="star-body">
+            <div class="star-row"><div class="star-lbl">S</div><div class="star-val">When companies ask "do you have B2B experience?", bridge via the enterprise rollout — 120 stores, 3 regions, cross-functional teams.</div></div>
+            <div class="star-row"><div class="star-lbl">T</div><div class="star-val">"I've operated at both ends — consumer (50M+ user interactions) and enterprise (120-store omnichannel rollout with IT, ops, and HQ alignment)."</div></div>
+            <div class="star-row"><div class="star-lbl">A</div><div class="star-val">The mobile app project required enterprise-grade stakeholder management: HQ sign-off, 3rd-party integration, 6-month rollout plan, training programs for store staff.</div></div>
+            <div class="star-row"><div class="star-lbl">R</div><div class="star-val"><span class="star-metric">120 stores live</span> <span class="star-metric">+25% app orders</span> <span class="star-metric">Top 2 nationally</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q&A Bank -->
+    <div class="prep-section" id="sec-qa">
+      <div class="prep-h">Q&A Bank</div>
+      <div class="prep-sub">Likely questions and how to frame your answer.</div>
+      <div class="qa-cards">
+        <div class="qa-c">
+          <div class="qa-hd"><div class="qa-q">Walk me through a product you owned end-to-end.</div><div class="qa-diff h">Hard</div></div>
+          <div class="qa-body"><div class="qa-hint">Use Smart-Reply.AI — discovery, build, and results. Name the LLM stack. Land on FCR +30%.</div><div class="qa-ans-box">"At Smart-Reply.AI I owned an LLM-powered customer agent from idea to production. Discovery: 40 user interviews revealed 24/7 coverage as the top pain. I selected OpenAI + RAG with Pinecone. We shipped in 4 months. FCR improved 30%, CSAT +25%."</div></div>
+        </div>
+        <div class="qa-c">
+          <div class="qa-hd"><div class="qa-q">How do you prioritize when everything feels urgent?</div><div class="qa-diff m">Medium</div></div>
+          <div class="qa-body"><div class="qa-hint">Name your framework (ICE/RICE/WSJF), give a concrete example from Sephora backlog.</div><div class="qa-ans-box">"I use ICE scoring — Impact × Confidence × Ease. At Sephora I had 10 competing features. Two had 9/10 impact but easy = 8. One was gamification (high effort) — I delayed it despite pressure. Checkout optimization shipped first. CR +12% in 2 weeks."</div></div>
+        </div>
+        <div class="qa-c">
+          <div class="qa-hd"><div class="qa-q">Tell me about a time you failed.</div><div class="qa-diff h">Hard</div></div>
+          <div class="qa-body"><div class="qa-hint">Use Smart-Reply.AI shutdown — frame as market/investor factors, not personal failure. Show learning.</div><div class="qa-ans-box">"Smart-Reply.AI had strong product metrics but we lost our US expansion investor due to sanction risk concerns. I learned: validate funding runway before building for scale, not after product-market fit. I now treat investor alignment as a product constraint from day one."</div></div>
+        </div>
+        <div class="qa-c">
+          <div class="qa-hd"><div class="qa-q">Why do you want this specific role?</div><div class="qa-diff e">Easy</div></div>
+          <div class="qa-body"><div class="qa-hint">Connect your AI background to their product challenge. Show you researched them.</div><div class="qa-ans-box">"I've spent 3 years building with LLMs — I know where the real complexity lives (not the API call, but the data quality, the edge cases, the feedback loops). [Company] is solving [X] — that's exactly where I want to apply those hard-won lessons."</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Voice Practice -->
+    <div class="prep-section" id="sec-voice">
+      <div class="prep-h">AI Voice Practice</div>
+      <div class="prep-sub">4 questions · Product Sense · ML · Metrics · Judgment · Strict scoring.</div>
+
+      <!-- ALEX PANEL FIRST - main action -->
+      <!-- WIDGET - custom styled -->
+      <style>
+        .alex-panel{background:var(--ink);border-radius:var(--r);padding:28px;text-align:center;color:#fff;margin-bottom:16px;}
+        .alex-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));
+          margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:28px;
+          box-shadow:0 0 0 0 rgba(0,196,255,0.4);transition:.3s;}
+        .alex-avatar.listening{animation:pulse 1.5s infinite;}
+        @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,196,255,0.5);}70%{box-shadow:0 0 0 18px rgba(0,196,255,0);}100%{box-shadow:0 0 0 0 rgba(0,196,255,0);}}
+        .alex-name{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;margin-bottom:6px;}
+        .alex-desc{font-size:14px;color:rgba(255,255,255,.55);margin-bottom:24px;line-height:1.5;}
+        .alex-status{font-size:13px;color:rgba(255,255,255,.4);margin-top:16px;min-height:20px;}
+        .btn-start-alex{display:inline-flex;align-items:center;gap:9px;padding:13px 32px;
+          border-radius:50px;background:linear-gradient(135deg,var(--acc),var(--acc2));
+          color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;
+          box-shadow:0 8px 24px rgba(0,87,255,.35);transition:.2s;}
+        .btn-start-alex:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,87,255,.45);}
+        .btn-end-alex{display:none;align-items:center;gap:9px;padding:11px 24px;
+          border-radius:50px;background:rgba(255,77,109,.15);border:1.5px solid rgba(255,77,109,.4);
+          color:#ff4d6d;font-size:14px;font-weight:600;cursor:pointer;transition:.2s;margin-top:12px;}
+        .btn-end-alex:hover{background:rgba(255,77,109,.25);}
+        .alex-waveform{display:none;align-items:center;justify-content:center;gap:3px;height:32px;margin:12px auto;}
+        .alex-waveform.active{display:flex;}
+        .wave-bar{width:3px;background:var(--acc2);border-radius:3px;animation:wave 1.2s ease-in-out infinite;}
+        .wave-bar:nth-child(1){height:8px;animation-delay:0s;}
+        .wave-bar:nth-child(2){height:16px;animation-delay:.1s;}
+        .wave-bar:nth-child(3){height:24px;animation-delay:.2s;}
+        .wave-bar:nth-child(4){height:32px;animation-delay:.3s;}
+        .wave-bar:nth-child(5){height:24px;animation-delay:.4s;}
+        .wave-bar:nth-child(6){height:16px;animation-delay:.5s;}
+        .wave-bar:nth-child(7){height:8px;animation-delay:.6s;}
+        @keyframes wave{0%,100%{transform:scaleY(0.4);}50%{transform:scaleY(1);}}
+      </style>
+
+      <div class="alex-panel">
+        <div class="alex-avatar" id="alexAvatar">🎤</div>
+        <div class="alex-name">Alex — AI PM Interviewer</div>
+        <div class="alex-desc">4 questions · Product Sense · ML · Metrics · Judgment<br>Scores strictly. No compliments unless earned.</div>
+        <div class="alex-waveform" id="alexWave">
+          <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+          <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+        </div>
+        <button class="btn-start-alex" id="btnStartAlex" onclick="startAlex()">▶ Start Practice Session</button>
+        <button class="btn-end-alex" id="btnEndAlex" onclick="endAlex()">■ End Session</button>
+        <div class="alex-status" id="alexStatus">Allow microphone access when prompted · Use headphones</div>
+      </div>
+
+      <script>
+      let elConversation = null;
+
+      async function startAlex(){
+        document.getElementById('btnStartAlex').style.display='none';
+        document.getElementById('alexStatus').textContent='Requesting microphone...';
+        
+        try {
+          // Request mic permission first
+          await navigator.mediaDevices.getUserMedia({ audio: true });
+          
+          // Use ElevenLabs SDK directly
+          const { Conversation } = await import('https://cdn.jsdelivr.net/npm/@11labs/client@latest/+esm');
+          
+          elConversation = await Conversation.startSession({
+            agentId: 'agent_4701kj67g4e2f148ymsjm8529xg6',
+            onConnect: () => {
+              document.getElementById('alexAvatar').classList.add('listening');
+              document.getElementById('alexWave').classList.add('active');
+              document.getElementById('btnEndAlex').style.display='inline-flex';
+              document.getElementById('alexStatus').textContent='Connected — Alex is listening...';
+            },
+            onDisconnect: () => { resetAlex(); },
+            onError: (e) => {
+              console.error(e);
+              document.getElementById('alexStatus').textContent='Connection error — try again';
+              document.getElementById('btnStartAlex').style.display='inline-flex';
+            },
+            onModeChange: ({mode}) => {
+              document.getElementById('alexStatus').textContent = 
+                mode === 'speaking' ? 'Alex is speaking...' : 'Listening — your turn...';
+            }
+          });
+        } catch(e) {
+          console.error(e);
+          document.getElementById('alexStatus').textContent='Microphone access required. Please allow and try again.';
+          document.getElementById('btnStartAlex').style.display='inline-flex';
+        }
+      }
+
+      async function endAlex(){
+        if(elConversation) {
+          await elConversation.endSession();
+          elConversation = null;
+        }
+        resetAlex();
+      }
+
+      function resetAlex(){
+        document.getElementById('btnStartAlex').style.display='inline-flex';
+        document.getElementById('btnEndAlex').style.display='none';
+        document.getElementById('alexAvatar').classList.remove('listening');
+        document.getElementById('alexWave').classList.remove('active');
+        document.getElementById('alexStatus').textContent='Session ended · Review your score above ↑';
+      }
+      </script>
+
+      <!-- TIPS -->
+      <div style="background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);padding:20px;margin-top:16px;">
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:10px;">⚡ Before you start</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;color:var(--mid);line-height:1.6;">
+          <div>✓ Answer in under <strong style="color:var(--ink);">90 seconds</strong></div>
+          <div>✓ End every answer on a <strong style="color:var(--ink);">metric</strong></div>
+          <div>✓ Name your <strong style="color:var(--ink);">framework</strong> explicitly</div>
+          <div>✓ Give a <strong style="color:var(--ink);">specific example</strong>, not generic</div>
+        </div>
+        <div style="margin-top:12px;padding:10px 14px;background:rgba(255,77,109,.05);border-radius:10px;border-left:3px solid #ff4d6d;font-size:13px;color:var(--mid);">
+          <strong style="color:#ff4d6d;">Kill phrases:</strong> "basically", "kind of", "we were trying to", "I think maybe", "sort of"
+        </div>
+      </div>
+    </div>
+
+    <!-- Call Brief -->
+    <div class="prep-section" id="sec-brief">
+      <div class="prep-h">Call Brief</div>
+      <div class="prep-sub">Your one-page cheat sheet for the call. Print or keep on a second screen.</div>
+      <div style="background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);padding:24px;">
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:var(--ink);margin-bottom:14px;">My positioning sentence</div>
+        <div style="background:rgba(0,87,255,.05);border:1px solid rgba(0,87,255,.12);border-radius:10px;padding:14px;font-size:14px;line-height:1.7;color:var(--ink2);margin-bottom:20px;">
+          "8+ years PM across e-commerce + AI. Sephora: 3× conversion, top-2 app. Smart-Reply: LLM agents with RAG/Pinecone. I turn complex problems into simple products — and I do it fast in new domains."
+        </div>
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:var(--ink);margin-bottom:12px;">Top 3 metrics to land</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+          <div style="background:rgba(0,87,255,.07);border:1px solid rgba(0,87,255,.15);padding:8px 16px;border-radius:10px;font-size:13.5px;font-weight:600;color:var(--acc);">Sephora CR +50%</div>
+          <div style="background:rgba(0,87,255,.07);border:1px solid rgba(0,87,255,.15);padding:8px 16px;border-radius:10px;font-size:13.5px;font-weight:600;color:var(--acc);">Top 2 app nationally</div>
+          <div style="background:rgba(0,87,255,.07);border:1px solid rgba(0,87,255,.15);padding:8px 16px;border-radius:10px;font-size:13.5px;font-weight:600;color:var(--acc);">Smart-Reply FCR +30%</div>
+        </div>
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:var(--ink);margin-bottom:12px;">Kill phrases</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <div style="background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.2);padding:6px 13px;border-radius:8px;font-size:13px;color:var(--red);">× "basically"</div>
+          <div style="background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.2);padding:6px 13px;border-radius:8px;font-size:13px;color:var(--red);">× "kind of"</div>
+          <div style="background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.2);padding:6px 13px;border-radius:8px;font-size:13px;color:var(--red);">× "we were trying to"</div>
+          <div style="background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.2);padding:6px 13px;border-radius:8px;font-size:13px;color:var(--red);">× "and also"</div>
+          <div style="background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.2);padding:6px 13px;border-radius:8px;font-size:13px;color:var(--red);">× "um" / "uh"</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<footer>
+  <div>© 2025 Prapp · AI PM Interview Trainer</div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="interview.html">Interview</a>
+    <a href="peers.html">Peer Finder</a>
+    <a href="index.html#pricing">Pricing</a>
+    <a href="index.html#pricing">Pricing</a>
+  </div>
+</footer>
+<script>
+
+function toggleProfile(){document.getElementById('profileModal').classList.toggle('open');}
+function toggleSearch(){
+  const ov=document.getElementById('searchOverlay');
+  if(!ov)return;
+  ov.classList.toggle('open');
+  if(ov.classList.contains('open')){
+    setTimeout(()=>{const i=document.getElementById('searchInput');if(i)i.focus();},80);
+  }
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.getElementById('profileModal').classList.remove('open');
+    const ov=document.getElementById('searchOverlay');if(ov)ov.classList.remove('open');
+  }
+  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();toggleSearch();}
+});
+const _obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');}),{threshold:.08});
+document.querySelectorAll('.fi').forEach(el=>_obs.observe(el));
+
+// ── Site search index ──────────────────────────────
+const SEARCH_INDEX = [
+  {icon:'🎯',title:'Job Interview Copilot',desc:'STAR answers, emotion read, filler alerts, voice practice',tag:'Interview',url:'interview.html'},
+  {icon:'💼',title:'Sales Call Copilot',desc:'Real-time objection handling, SPIN/MEDDIC, buyer emotion AI',tag:'Sales',url:'sales.html'},
+  {icon:'🚀',title:'Investor Pitch Copilot',desc:'VC signal tracking, traction prompts, objection anticipation',tag:'Investor',url:'investor.html'},
+  {icon:'🤝',title:'Negotiation Copilot',desc:'Anchoring, BATNA reminders, concession tracking',tag:'Negotiation',url:'negotiation.html'},
+  {icon:'🔍',title:'Discovery Call Copilot',desc:'Pain questions, fit scoring, CRM-ready summaries',tag:'Discovery',url:'discovery.html'},
+  {icon:'⚡',title:'Live Copilot — start session',desc:'Match with an AI PM peer in your domain',tag:'Tool',url:'copilot.html'},
+  {icon:'📋',title:'Prep Suite — STAR stories, Q&A, voice',desc:'Prepare before your call with AI coaching',tag:'Tool',url:'prep.html'},
+  {icon:'🎭',title:'Emotion Detection',desc:'Reads interest, trust, hesitation live from voice tone',tag:'Feature',url:'index.html#features'},
+  {icon:'🎤',title:'Speech Coach',desc:'Filler word alerts, pace, confidence, structure hints',tag:'Feature',url:'index.html#features'},
+  {icon:'🌍',title:'10 Languages',desc:'English, Mandarin, Spanish, Hindi, Arabic, French, Portuguese, German, Japanese, Korean',tag:'Feature',url:'index.html#features'},
+  {icon:'📱',title:'Phone as Listener',desc:'Use your phone mic for in-person or phone calls',tag:'Feature',url:'index.html#features'},
+  {icon:'💰',title:'Pricing — Starter $4.99',desc:'50 tokens, no expiry, all call types',tag:'Pricing',url:'index.html#pricing'},
+  {icon:'💰',title:'Pricing — Explorer $12.99',desc:'150 tokens, save 30%, all languages, prep suite',tag:'Pricing',url:'index.html#pricing'},
+  {icon:'💰',title:'Pricing — Pro $29.99',desc:'400 tokens, save 50%, AI voice practice, coaching mode',tag:'Pricing',url:'index.html#pricing'},
+  {icon:'🔊',title:'AI Voice Practice',desc:'Practice with Alex — realistic AI interviewer, ElevenLabs',tag:'Feature',url:'prep.html?mode=interview'},
+  {icon:'⭐',title:'STAR Stories',desc:'Structured answer templates for behavioral questions',tag:'Interview',url:'prep.html?mode=interview'},
+  {icon:'❓',title:'Q&A Bank',desc:'12 likely questions with answer frameworks and difficulty ratings',tag:'Interview',url:'prep.html?mode=interview'},
+  {icon:'📊',title:'Buying Signal Detection',desc:'Tracks tone shifts and word choices that signal readiness to buy',tag:'Sales',url:'sales.html'},
+  {icon:'🧭',title:'SPIN / MEDDIC Frameworks',desc:'Live framework prompts — switch between SPIN, MEDDIC, Challenger mid-call',tag:'Sales',url:'sales.html'},
+  {icon:'⚓',title:'Anchor Detection',desc:'Detects pricing anchors, suggests counter with data-backed alternatives',tag:'Negotiation',url:'negotiation.html'},
+];
+
+function runSearch(q){
+  const box=document.getElementById('searchResults');
+  if(!box)return;
+  const query=q.trim().toLowerCase();
+  if(!query){box.innerHTML='<div class="search-hint">Try: "objection", "STAR", "emotion", "voice practice", "pricing"</div>';return;}
+  const hits=SEARCH_INDEX.filter(r=>
+    r.title.toLowerCase().includes(query)||
+    r.desc.toLowerCase().includes(query)||
+    r.tag.toLowerCase().includes(query)
+  );
+  if(!hits.length){box.innerHTML='<div class="search-empty">No results for "'+q+'"</div>';return;}
+  const grouped={};
+  hits.forEach(h=>{if(!grouped[h.tag])grouped[h.tag]=[];grouped[h.tag].push(h);});
+  let html='';
+  Object.entries(grouped).forEach(([tag,items])=>{
+    html+='<div class="search-section-label">'+tag+'</div>';
+    items.forEach(item=>{
+      html+='<a class="search-result" href="'+item.url+'">';
+      html+='<div class="sr-icon">'+item.icon+'</div>';
+      html+='<div><div class="sr-title">'+item.title+'</div>';
+      html+='<div class="sr-desc">'+item.desc+'</div></div></a>';
+    });
+  });
+  box.innerHTML=html;
+}
+
+
+const urlP2=new URLSearchParams(window.location.search);
+const mode2=urlP2.get('mode')||'interview';
+const ml={interview:'Interview',sales:'Sales',investor:'Investor Pitch',negotiation:'Negotiation',discovery:'Discovery'};
+document.getElementById('prepModeTitle').textContent=(ml[mode2]||'Interview')+' Prep Suite';
+document.getElementById('prepModeSub').textContent='Prapp · '+(ml[mode2]||'Interview')+' preparation';
+document.title=(ml[mode2]||'Interview')+' Prep — Prapp';
+
+function switchSection(id){
+  document.querySelectorAll('.prep-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.prep-nav-item').forEach(n=>n.classList.remove('active'));
+  const sec=document.getElementById('sec-'+id);
+  if(sec)sec.classList.add('active');
+  const nav=document.querySelector('[data-sec="'+id+'"]');
+  if(nav)nav.classList.add('active');
+}
+document.querySelectorAll('.star-hd').forEach(hd=>{
+  hd.addEventListener('click',()=>hd.closest('.star-c').classList.toggle('open'));
+});
+document.querySelectorAll('.qa-hd').forEach(hd=>{
+  hd.addEventListener('click',()=>hd.closest('.qa-c').classList.toggle('open'));
+});
+function launchVoice(){
+  document.getElementById('sec-voice').scrollIntoView({behavior:'smooth'});
+  switchSection('voice');
+}
+function launchCopilotFromPrep(){
+  window.location.href='peers.html';
+}
+
+</script>
+<script>
+
+function toggleMobileMenu(){
+  const m=document.getElementById('mobileMenu');
+  m.classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  const menu=document.getElementById('mobileMenu');
+  if(menu && menu.classList.contains('open') && !e.target.closest('.hamburger') && !e.target.closest('.mobile-menu')){
+    menu.classList.remove('open');
+  }
+});
+
+</script>
+
+<script>
+// ─── Supabase Auth State ───────────────────────────────────
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+_sb.auth.getSession().then(({ data: { session } }) => { updateNavAuth(session?.user); });
+_sb.auth.onAuthStateChange((_, session) => { updateNavAuth(session?.user); });
+
+function updateNavAuth(user) {
+  const avatar = document.getElementById('navAvatar');
+  const label = document.getElementById('navProfileLabel');
+  if (!avatar || !label) return;
+  if (user) {
+    const name = user.user_metadata?.full_name || user.email || '';
+    const initials = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2) || 'ME';
+    avatar.textContent = initials;
+    label.textContent = name.split(' ')[0] || 'Profile';
+  } else {
+    avatar.textContent = '→';
+    label.textContent = 'Sign In';
+  }
+}
+function handleProfileClick() {
+  _sb.auth.getSession().then(({ data: { session } }) => {
+    if (session) { toggleProfile(); }
+    else { window.location.href = 'auth.html'; }
+  });
+}
+</script>
+</body>
+</html
+      <!-- HOW SCORING WORKS - secondary, below fold -->
+      <details style="margin-top:16px;">
+        <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--mid);padding:12px 16px;background:var(--card);border:1px solid var(--card-b);border-radius:12px;list-style:none;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:14px;">📊</span> What gets measured after each session <span style="margin-left:auto;font-size:11px;opacity:.5;">tap to expand</span>
+        </summary>
+        <div style="margin-top:8px;">
+
+      <div style="background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);padding:24px;margin-bottom:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:8px;">
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--ink);">What Alex measures</div>
+          <div style="font-size:12px;color:var(--mid);background:rgba(13,31,60,.04);padding:4px 10px;border-radius:20px;">🔒 Only visible to you</div>
+        </div>
+        <div style="font-size:13px;color:var(--mid);margin-bottom:18px;">After every session your performance is tracked across 6 dimensions. Scores are private — peers never see them.</div>
+
+        <!-- 6 dimensions -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
+          <div style="background:rgba(0,87,255,.04);border-radius:10px;padding:12px;">
+            <div style="font-size:11px;font-weight:700;color:var(--acc);margin-bottom:4px;letter-spacing:.5px;">STRUCTURE</div>
+            <div style="font-size:13px;color:var(--mid);margin-bottom:8px;">Framework named · logical flow · clear conclusion</div>
+            <div style="height:4px;background:rgba(0,87,255,.1);border-radius:4px;"><div style="width:72%;height:100%;background:var(--acc);border-radius:4px;"></div></div>
+          </div>
+          <div style="background:rgba(124,58,237,.04);border-radius:10px;padding:12px;">
+            <div style="font-size:11px;font-weight:700;color:var(--purple);margin-bottom:4px;letter-spacing:.5px;">AI/ML DEPTH</div>
+            <div style="font-size:13px;color:var(--mid);margin-bottom:8px;">Technical accuracy · specific concepts · trade-offs</div>
+            <div style="height:4px;background:rgba(124,58,237,.1);border-radius:4px;"><div style="width:45%;height:100%;background:var(--purple);border-radius:4px;"></div></div>
+          </div>
+          <div style="background:rgba(0,196,140,.04);border-radius:10px;padding:12px;">
+            <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:4px;letter-spacing:.5px;">METRICS & OUTCOMES</div>
+            <div style="font-size:13px;color:var(--mid);margin-bottom:8px;">Concrete numbers · business impact · validation</div>
+            <div style="height:4px;background:rgba(0,196,140,.1);border-radius:4px;"><div style="width:58%;height:100%;background:var(--green);border-radius:4px;"></div></div>
+          </div>
+          <div style="background:rgba(255,122,47,.04);border-radius:10px;padding:12px;">
+            <div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px;letter-spacing:.5px;">JUDGMENT</div>
+            <div style="font-size:13px;color:var(--mid);margin-bottom:8px;">Nuanced thinking · risk awareness · prioritisation</div>
+            <div style="height:4px;background:rgba(255,122,47,.1);border-radius:4px;"><div style="width:63%;height:100%;background:var(--orange);border-radius:4px;"></div></div>
+          </div>
+          <div style="background:rgba(255,77,109,.04);border-radius:10px;padding:12px;">
+            <div style="font-size:11px;font-weight:700;color:#ff4d6d;margin-bottom:4px;letter-spacing:.5px;">COMMUNICATION</div>
+            <div style="font-size:13px;color:var(--mid);margin-bottom:8px;">Filler words · pace · confidence · storytelling</div>
+            <div style="height:4px;background:rgba(255,77,109,.1);border-radius:4px;"><div style="width:38%;height:100%;background:#ff4d6d;border-radius:4px;"></div></div>
+          </div>
+          <div style="background:rgba(13,31,60,.03);border-radius:10px;padding:12px;">
+            <div style="font-size:11px;font-weight:700;color:var(--ink2);margin-bottom:4px;letter-spacing:.5px;">CONCISENESS</div>
+            <div style="font-size:13px;color:var(--mid);margin-bottom:8px;">Answer length · no rambling · ends on a metric</div>
+            <div style="height:4px;background:rgba(13,31,60,.08);border-radius:4px;"><div style="width:80%;height:100%;background:var(--ink2);border-radius:4px;"></div></div>
+          </div>
+        </div>
+
+        <!-- After session output -->
+        <div style="border-top:1px solid var(--card-b);padding-top:16px;">
+          <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px;">After each session you get:</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;">
+              <span style="color:var(--green);font-weight:700;flex-shrink:0;">✦ Strongest</span>
+              <span style="color:var(--mid);">Your best-performing dimension this session</span>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;">
+              <span style="color:#ff4d6d;font-weight:700;flex-shrink:0;">⚠ Biggest gap</span>
+              <span style="color:var(--mid);">What pulled your score down most</span>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;">
+              <span style="color:var(--acc);font-weight:700;flex-shrink:0;">🎯 One drill</span>
+              <span style="color:var(--mid);">A specific exercise to practice before your next session</span>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;">
+              <span style="color:var(--purple);font-weight:700;flex-shrink:0;">📈 Progress</span>
+              <span style="color:var(--mid);">How this session compares to your last 5 — in your private profile</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;padding:10px 14px;border-radius:10px;background:rgba(255,77,109,.05);border-left:3px solid #ff4d6d;font-size:13px;color:var(--mid);">
+          No metric or real example? <strong style="color:#ff4d6d;">Score ≤ 4 automatically.</strong> No exceptions.
+        </div>
+      </div>
+
+        </div>
+      </details>
+>

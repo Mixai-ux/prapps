@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Prapp — The First AI PM Interview Trainer</title>
+<style>
+/* ═══════════════════════════════════════════════════
+   MEETMIND DESIGN SYSTEM — shared across all pages
+   ═══════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+
+:root {
+  /* Palette */
+  --sky0:#f0f7ff; --sky1:#dceffe; --sky2:#b8dffe; --sky3:#6cb8f6;
+  --ink:#0d1f3c;  --ink2:#1e3a5f; --mid:#4a6fa5;
+  --acc:#0057ff;  --acc2:#00c4ff;
+  --green:#00c48c; --orange:#ff7a2f; --red:#ff4d6d; --purple:#7c3aed; --gold:#f59e0b;
+  /* Segment accent colors */
+  --seg-interview:#0057ff;
+  --seg-sales:#00c48c;
+  --seg-investor:#7c3aed;
+  --seg-negotiation:#ff7a2f;
+  --seg-discovery:#f59e0b;
+  /* Surfaces */
+  --card:rgba(255,255,255,0.80);
+  --card-b:rgba(255,255,255,0.94);
+  --shadow:0 4px 28px rgba(13,31,60,.09);
+  --shadow-lg:0 14px 60px rgba(0,87,255,.13);
+  /* Shapes */
+  --r:18px; --r-sm:10px; --r-xs:7px;
+  --nav-h:62px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--sky0);color:var(--ink);overflow-x:hidden;}
+
+/* BG mesh */
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 8%,rgba(180,220,255,.55) 0%,transparent 60%),
+    radial-gradient(ellipse 55% 45% at 85% 0%,rgba(108,184,246,.32) 0%,transparent 55%),
+    radial-gradient(ellipse 65% 65% at 50% 100%,rgba(220,239,254,.65) 0%,transparent 60%),
+    linear-gradient(168deg,#e8f4ff 0%,#f5faff 40%,#edf6ff 100%);}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:200;height:var(--nav-h);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;
+  background:rgba(240,247,255,.88);backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(184,223,254,.45);}
+
+.logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;
+  color:var(--ink);display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0;}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--acc);
+  animation:pulse 2s ease-in-out infinite;}
+
+.nav-pills{display:flex;align-items:center;gap:2px;
+  background:rgba(13,31,60,.055);border-radius:50px;padding:3px;}
+.nav-pill{display:flex;align-items:center;gap:5px;padding:6px 14px;
+  border-radius:50px;border:none;background:transparent;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
+  color:var(--ink2);cursor:pointer;text-decoration:none;
+  transition:background .15s,color .15s;white-space:nowrap;}
+.nav-pill:hover{background:rgba(255,255,255,.7);}
+.nav-pill.active{background:#fff;color:var(--seg-color,var(--acc));
+  box-shadow:0 2px 10px rgba(13,31,60,.1);}
+.nav-pill .pi{font-size:13px;}
+
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.nav-txt-link{padding:6px 12px;border-radius:8px;font-size:13px;
+  color:var(--ink2);text-decoration:none;transition:background .15s,color .15s;}
+.nav-txt-link:hover{background:rgba(0,87,255,.07);color:var(--acc);}
+
+.nav-profile{display:flex;align-items:center;gap:6px;padding:6px 14px;
+  border-radius:50px;background:var(--card);border:1px solid var(--card-b);
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--ink);
+  cursor:pointer;box-shadow:var(--shadow);text-decoration:none;
+  transition:background .15s,transform .15s;}
+.nav-profile:hover{background:rgba(255,255,255,.95);transform:translateY(-1px);}
+.nav-av{width:22px;height:22px;border-radius:50%;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;color:#fff;font-weight:700;}
+
+.btn-nav-cta{padding:8px 20px;border-radius:50px;
+  background:var(--ink);color:#fff;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:500;
+  text-decoration:none;transition:background .2s,transform .15s;white-space:nowrap;}
+.btn-nav-cta:hover{background:var(--acc);transform:translateY(-1px);}
+
+/* ── BUTTONS ── */
+.btn-p{display:inline-flex;align-items:center;gap:9px;
+  background:var(--ink);color:#fff;padding:13px 28px;border-radius:50px;border:none;
+  font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;text-decoration:none;
+  box-shadow:0 6px 28px rgba(0,87,255,.20);transition:background .2s,transform .15s,box-shadow .2s;}
+.btn-p:hover{background:var(--acc);transform:translateY(-2px);box-shadow:0 10px 36px rgba(0,87,255,.28);}
+.btn-p .arr{transition:transform .2s;}
+.btn-p:hover .arr{transform:translateX(4px);}
+.btn-s{display:inline-flex;align-items:center;gap:7px;
+  background:var(--card);color:var(--ink);padding:13px 24px;border-radius:50px;
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:400;cursor:pointer;
+  border:1px solid var(--card-b);text-decoration:none;box-shadow:var(--shadow);
+  transition:background .2s,transform .15s;}
+.btn-s:hover{background:rgba(255,255,255,.95);transform:translateY(-1px);}
+
+/* ── SECTION CHROME ── */
+.sec-tag{display:inline-block;background:rgba(0,87,255,.08);color:var(--acc);
+  padding:4px 13px;border-radius:50px;font-size:11.5px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;}
+.sec-h{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;
+  font-size:clamp(26px,3.6vw,42px);color:var(--ink);line-height:1.13;}
+.sec-sub{margin-top:10px;font-size:16px;color:var(--mid);font-weight:300;
+  max-width:500px;margin-left:auto;margin-right:auto;}
+
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);
+  box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s;}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+
+/* ── FOOTER ── */
+footer{position:relative;z-index:1;padding:24px 5%;
+  border-top:1px solid rgba(184,223,254,.4);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+footer,.footer-links a{font-size:13px;color:var(--mid);}
+.footer-links{display:flex;gap:20px;}
+.footer-links a{text-decoration:none;transition:color .2s;}
+.footer-links a:hover{color:var(--acc);}
+
+/* ── FADE IN ── */
+.fi{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease;}
+.fi.vis{opacity:1;transform:translateY(0);}
+
+/* ── ANIMATIONS ── */
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.6}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── PROFILE MODAL ── */
+.modal-ov{position:fixed;inset:0;z-index:1000;
+  background:rgba(13,31,60,.42);backdrop-filter:blur(8px);
+  display:flex;align-items:flex-start;justify-content:flex-end;
+  padding:70px 20px 0;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-ov.open{opacity:1;pointer-events:all;}
+.profile-modal{width:370px;background:#fff;border-radius:20px;
+  box-shadow:0 24px 80px rgba(13,31,60,.25);overflow:hidden;
+  transform:translateY(-10px);transition:transform .25s cubic-bezier(.4,0,.2,1);}
+.modal-ov.open .profile-modal{transform:translateY(0);}
+.pm-head{background:var(--ink);padding:24px 22px 18px;position:relative;}
+.pm-close{position:absolute;top:13px;right:14px;
+  background:rgba(255,255,255,.12);border:none;width:27px;height:27px;
+  border-radius:50%;color:#fff;font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:background .15s;}
+.pm-close:hover{background:rgba(255,255,255,.22);}
+.pm-av{width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;color:#fff;font-weight:700;margin-bottom:10px;
+  border:3px solid rgba(255,255,255,.18);}
+.pm-name{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:#fff;margin-bottom:2px;}
+.pm-role{font-size:12.5px;color:rgba(255,255,255,.55);}
+.pm-stats{display:grid;grid-template-columns:repeat(3,1fr);background:var(--sky0);
+  border-bottom:1px solid rgba(184,223,254,.4);}
+.pms{padding:13px 0;text-align:center;border-right:1px solid rgba(184,223,254,.4);}
+.pms:last-child{border-right:none;}
+.pms-v{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;color:var(--ink);}
+.pms-l{font-size:10.5px;color:var(--mid);margin-top:2px;}
+.pm-tok{margin:10px 18px 4px;background:rgba(0,87,255,.07);border:1px solid rgba(0,87,255,.12);
+  border-radius:10px;padding:11px 13px;}
+.pm-tok-h{font-size:12px;color:var(--mid);margin-bottom:7px;display:flex;justify-content:space-between;}
+.pm-tok-h span:last-child{font-weight:600;color:var(--acc);}
+.pm-tok-track{height:5px;background:rgba(0,87,255,.12);border-radius:3px;overflow:hidden;}
+.pm-tok-fill{height:100%;width:62%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:3px;}
+.pm-tok-note{font-size:11px;color:var(--mid);margin-top:6px;}
+.pm-tok-note span{color:var(--acc);cursor:pointer;font-weight:500;}
+.pm-sl{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);
+  padding:8px 18px 5px;font-weight:500;}
+.pm-row{display:flex;align-items:center;justify-content:space-between;
+  padding:10px 18px;cursor:pointer;transition:background .15s;text-decoration:none;}
+.pm-row:hover{background:var(--sky0);}
+.pm-row-l{display:flex;align-items:center;gap:11px;}
+.pm-ri{width:32px;height:32px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;font-size:15px;}
+.pm-ri.blue{background:rgba(0,87,255,.09);}
+.pm-ri.green{background:rgba(0,196,140,.09);}
+.pm-ri.orange{background:rgba(255,122,47,.09);}
+.pm-ri.purple{background:rgba(124,58,237,.09);}
+.pm-rt{font-size:13.5px;font-weight:500;color:var(--ink);}
+.pm-rs{font-size:11px;color:var(--mid);}
+.pm-arr{font-size:13px;color:rgba(74,111,165,.4);}
+.pm-div{height:1px;background:rgba(184,223,254,.35);margin:6px 0;}
+.pm-foot{padding:12px 18px 18px;border-top:1px solid rgba(184,223,254,.35);display:flex;gap:8px;}
+.pm-logout{flex:1;padding:9px;border-radius:8px;border:1px solid rgba(184,223,254,.6);
+  background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--mid);cursor:pointer;
+  transition:background .15s,color .15s;}
+.pm-logout:hover{background:var(--sky0);color:var(--ink);}
+.pm-topup{flex:1;padding:9px;border-radius:8px;background:var(--acc);color:#fff;border:none;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:background .15s;}
+.pm-topup:hover{background:#0048d4;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){.nav-pills{display:none;}}
+@media(max-width:640px){
+  .nav-right .nav-txt-link{display:none;}
+  .btn-p,.btn-s{padding:11px 20px;font-size:14px;}
+}
+
+/* page-level accent */
+:root{--seg-color:var(--acc);}
+
+/* Index-specific styles */
+.hero-index{position:relative;z-index:1;text-align:center;
+  padding:88px 6% 0;display:flex;flex-direction:column;align-items:center;gap:20px;}
+.hero-index h1{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+  font-size:clamp(38px,6vw,74px);line-height:1.06;color:var(--ink);max-width:860px;
+  animation:fadeUp .7s .05s ease both;}
+.hero-index h1 em{font-style:normal;
+  background:linear-gradient(130deg,var(--acc) 0%,var(--acc2) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub-idx{max-width:540px;font-size:17px;line-height:1.65;color:var(--mid);font-weight:300;
+  animation:fadeUp .7s .15s ease both;}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;
+  background:var(--card);border:1px solid var(--card-b);
+  padding:5px 15px;border-radius:50px;font-size:12.5px;font-weight:500;color:var(--acc);
+  box-shadow:var(--shadow);animation:fadeUp .6s ease both;}
+.hero-actions-idx{display:flex;flex-wrap:wrap;gap:11px;justify-content:center;
+  animation:fadeUp .7s .25s ease both;}
+
+/* Segment cards row */
+.seg-cards{position:relative;z-index:1;
+  padding:52px 6% 0;
+  display:grid;grid-template-columns:repeat(5,1fr);gap:13px;max-width:1100px;margin:0 auto;}
+.seg-card{background:var(--card);border:1.5px solid var(--card-b);border-radius:var(--r);
+  padding:22px 18px;text-align:center;text-decoration:none;
+  box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s,border-color .2s;
+  position:relative;overflow:hidden;}
+.seg-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:var(--c);opacity:0;transition:opacity .2s;}
+.seg-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);}
+.seg-card:hover::after{opacity:1;}
+.seg-icon-lg{font-size:32px;margin-bottom:10px;display:block;}
+.seg-name{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:5px;}
+.seg-desc{font-size:12px;line-height:1.55;color:var(--mid);margin-bottom:12px;}
+.seg-cta-link{font-size:12.5px;font-weight:600;color:var(--c);text-decoration:none;}
+
+/* How it works */
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:900px;margin:0 auto;}
+.how-step{padding:30px 24px;background:var(--card);border:1px solid var(--card-b);
+  border-radius:var(--r);box-shadow:var(--shadow);text-align:center;}
+.how-num{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:44px;
+  color:rgba(0,87,255,.12);margin-bottom:8px;}
+.how-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;
+  color:var(--ink);margin-bottom:7px;}
+.how-desc{font-size:13.5px;line-height:1.6;color:var(--mid);}
+
+/* Trust / social proof */
+.logos-row{display:flex;justify-content:center;align-items:center;gap:28px;flex-wrap:wrap;}
+.logo-item{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;
+  color:rgba(74,111,165,.35);transition:color .2s;}
+.logo-item:hover{color:var(--mid);}
+
+/* Stats */
+.stats-row{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;}
+.stat-block{text-align:center;}
+.stat-val{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+  font-size:clamp(32px,4vw,48px);color:var(--ink);}
+.stat-val em{font-style:normal;color:var(--acc);}
+.stat-lbl{font-size:13px;color:var(--mid);margin-top:3px;}
+
+/* Feature cols */
+.feat3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.feat-c{padding:26px;background:var(--card);border:1px solid var(--card-b);
+  border-radius:var(--r);box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s;}
+.feat-c:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+.feat-icon{font-size:26px;margin-bottom:11px;}
+.feat-name{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16.5px;
+  color:var(--ink);margin-bottom:6px;}
+.feat-desc{font-size:13.5px;line-height:1.6;color:var(--mid);}
+.feat-badge{display:inline-block;margin-top:10px;padding:2px 10px;border-radius:20px;
+  font-size:11px;font-weight:600;}
+.feat-badge.uniq{background:rgba(0,87,255,.07);color:var(--acc);}
+.feat-badge.core{background:rgba(0,87,255,.07);color:var(--acc);}
+
+/* Pricing */
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:880px;margin:0 auto;}
+.price-card{background:var(--card);border:1.5px solid var(--card-b);border-radius:var(--r);
+  padding:28px 22px;text-align:center;box-shadow:var(--shadow);
+  transition:transform .2s;position:relative;}
+.price-card:hover{transform:translateY(-4px);}
+.price-card.feat-pc{background:var(--ink);border-color:var(--acc);box-shadow:var(--shadow-lg);}
+.price-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+  background:var(--acc);color:#fff;padding:3px 13px;border-radius:20px;
+  font-size:11px;font-weight:600;white-space:nowrap;}
+.price-name{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:var(--ink);}
+.price-card.feat-pc .price-name{color:#fff;}
+.price-tok{font-size:12.5px;color:var(--mid);margin:4px 0 13px;}
+.price-card.feat-pc .price-tok{color:rgba(255,255,255,.5);}
+.price-num{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:44px;color:var(--ink);}
+.price-card.feat-pc .price-num{color:#fff;}
+.price-per{font-size:12px;color:var(--mid);margin-bottom:18px;}
+.price-card.feat-pc .price-per{color:rgba(255,255,255,.5);}
+.price-feats{list-style:none;text-align:left;display:flex;flex-direction:column;gap:7px;margin-bottom:20px;}
+.price-feats li{font-size:13px;color:var(--mid);display:flex;align-items:center;gap:7px;}
+.price-feats li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;}
+.price-card.feat-pc .price-feats li{color:rgba(255,255,255,.7);}
+.price-btn{width:100%;padding:11px;border-radius:var(--r-sm);border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;
+  background:rgba(0,87,255,.08);color:var(--acc);transition:background .2s,transform .15s;}
+.price-card.feat-pc .price-btn{background:var(--acc);color:#fff;}
+.price-btn:hover{transform:translateY(-1px);filter:brightness(1.07);}
+
+/* CTA block */
+.cta-block{max-width:640px;margin:0 auto;background:var(--ink);border-radius:28px;
+  padding:52px 44px;text-align:center;box-shadow:0 18px 80px rgba(0,87,255,.2);}
+.cta-block h2{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+  font-size:clamp(26px,3.8vw,42px);color:#fff;margin-bottom:12px;}
+.cta-block p{color:rgba(255,255,255,.6);font-size:16px;margin-bottom:26px;}
+.cta-row{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;}
+
+@media(max-width:900px){.seg-cards{grid-template-columns:repeat(3,1fr);}.feat3,.how-grid{grid-template-columns:1fr;}.price-grid{grid-template-columns:1fr;}}
+@media(max-width:640px){.seg-cards{grid-template-columns:1fr 1fr;}.stats-row{gap:24px;}}
+
+
+/* ═══ MOBILE-FIRST RESPONSIVE ═══ */
+@media(max-width:768px){
+  .nav-pills{display:none;}
+  .nav-profile{display:none;}
+  .btn-nav-cta{padding:7px 14px;font-size:13px;}
+  .hamburger{display:flex;}
+}
+@media(min-width:769px){
+  .hamburger{display:none;}
+  .mobile-menu{display:none!important;}
+}
+.hamburger{flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:8px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--ink);border-radius:2px;transition:.2s;}
+.mobile-menu{position:fixed;top:var(--nav-h);left:0;right:0;z-index:199;
+  background:rgba(240,247,255,.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(180,210,255,.3);
+  padding:16px 5%;flex-direction:column;gap:4px;display:none;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{padding:12px 16px;border-radius:12px;font-size:15px;font-weight:500;
+  color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px;}
+.mobile-menu a:hover,.mobile-menu a.active{background:rgba(0,87,255,.08);color:var(--acc);}
+.mobile-menu-cta{margin-top:4px;padding:12px!important;background:var(--acc)!important;
+  color:#fff!important;border-radius:12px!important;justify-content:center!important;font-weight:600!important;}
+
+</style>
+</head>
+<body>
+<div class="bg-mesh"></div>
+
+<nav>
+  <a href="index.html" class="logo"><span class="logo-dot"></span>Prapp</a>
+  <div class="nav-pills">
+    <a href="index.html" class="nav-pill active" data-seg=""><span class="pi">🏠</span>Home</a>
+    <a href="interview.html" class="nav-pill" data-seg="interview"><span class="pi">🎯</span>Practice</a>
+    <a href="peers.html" class="nav-pill" data-seg="peers"><span class="pi">👥</span>Peer Finder</a>
+    <a href="index.html#pricing" class="nav-pill" data-seg="pricing"><span class="pi">💰</span>Pricing</a>
+  </div>
+  <div class="nav-right">
+    <a href="index.html#pricing" class="nav-txt-link">Pricing</a>
+    <button class="nav-profile" id="navProfileBtn" onclick="handleProfileClick()"><div class="nav-av" id="navAvatar">?</div><span id="navProfileLabel">Sign In</span></button>
+    <a href="prep.html" target="_blank" class="btn-nav-cta">🎤 Start Practice</a>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">🏠 Home</a>
+  <a href="interview.html">🎯 Practice</a>
+  <a href="peers.html">👥 Peer Finder</a>
+  <a href="index.html#pricing">💰 Pricing</a>
+  <a href="prep.html" class="mobile-menu-cta">🎤 Start Practice</a>
+</div>
+
+<div class="modal-ov" id="profileModal" onclick="if(event.target===this)toggleProfile()">
+  <div class="profile-modal">
+    <div class="pm-head">
+      <button class="pm-close" onclick="toggleProfile()">✕</button>
+      <div class="pm-av">MS</div>
+      <div class="pm-name">Michael Shineev</div>
+      <div class="pm-role">Product Manager · 8yr exp</div>
+    </div>
+    <div class="pm-stats">
+      <div class="pms"><div class="pms-v">12</div><div class="pms-l">Sessions</div></div>
+      <div class="pms"><div class="pms-v">93</div><div class="pms-l">Tokens left</div></div>
+      <div class="pms"><div class="pms-v">68</div><div class="pms-l">Avg score</div></div>
+    </div>
+    <div class="pm-tok">
+      <div class="pm-tok-h"><span>Session tokens</span><span>93 / 150</span></div>
+      <div class="pm-tok-track"><div class="pm-tok-fill"></div></div>
+      <div class="pm-tok-note">~9 sessions remaining · <span>Top up →</span></div>
+    </div>
+    <div style="padding:4px 0">
+      <div class="pm-sl">Quick Launch</div>
+      <a href="prep.html" class="pm-row">
+        <div class="pm-row-l"><div class="pm-ri blue">🎤</div><div><div class="pm-rt">Start Practice</div><div class="pm-rs">AI PM questions · strict scoring</div></div></div>
+        <div class="pm-arr">›</div>
+      </a>
+      <a href="peers.html" class="pm-row">
+        <div class="pm-row-l"><div class="pm-ri green">👥</div><div><div class="pm-rt">Find Peers</div><div class="pm-rs">Match by domain · schedule session</div></div></div>
+        <div class="pm-arr">›</div>
+      </a>
+      <div class="pm-div"></div>
+      <div class="pm-sl">My Progress</div>
+      <a href="interview.html" class="pm-row">
+        <div class="pm-row-l"><div class="pm-ri blue">📊</div><div><div class="pm-rt">Last Session</div><div class="pm-rs">AI Product Sense · Score 7/10</div></div></div>
+        <div class="pm-arr">›</div>
+      </a>
+      <a href="peers.html" class="pm-row">
+        <div class="pm-row-l"><div class="pm-ri green">👥</div><div><div class="pm-rt">Peer Sessions</div><div class="pm-rs">2 upcoming · 1 reference received</div></div></div>
+        <div class="pm-arr">›</div>
+      </a>
+      <a href="index.html#pricing" class="pm-row">
+        <div class="pm-row-l"><div class="pm-ri purple">🎟</div><div><div class="pm-rt">Buy More Sessions</div><div class="pm-rs">From $4.99 · no expiry</div></div></div>
+        <div class="pm-arr">›</div>
+      </a>
+    </div>
+    <div class="pm-foot">
+      <button class="pm-logout">Sign out</button>
+      <button class="pm-topup">+ Buy tokens</button>
+    </div>
+  </div>
+</div>
+
+<section class="hero-index fi vis">
+  <div class="hero-badge">🎯 AI Practice · Peer Network · References</div>
+  <h1>The first AI PM interview<br>trainer built by <em>PMs, for PMs.</em></h1>
+  <p class="hero-sub-idx">
+    Practice with 800+ real questions from Google, Meta, Anthropic. Get scored strictly. Find peers in your domain. And get a reference.
+  </p>
+  <div class="hero-actions-idx">
+    <a href="prep.html" target="_blank" class="btn-p">
+      🎤 Start Free Practice <span class="arr">→</span>
+    </a>
+    <a href="peers.html" class="btn-s">Find Practice Partners</a>
+  </div>
+  <p style="margin-top:20px;font-size:14px;color:var(--mid);opacity:.75;">The platform where practice meets real network.</p>
+</section>
+
+<!-- 4 Differentiators -->
+<section style="position:relative;z-index:1;padding:48px 6% 56px;">
+  <div style="text-align:center;margin-bottom:32px;">
+    <div class="sec-tag">Why Prapp</div>
+    <h2 class="sec-h" style="margin-top:8px;">Everything missing<br>from other prep tools.</h2>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:960px;margin:0 auto;">
+    <div style="background:rgba(255,255,255,.85);border:1px solid rgba(180,210,255,.4);border-radius:18px;padding:24px;box-shadow:0 4px 28px rgba(13,31,60,.07);">
+      <div style="font-size:28px;margin-bottom:12px;">🎤</div>
+      <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:#0d1f3c;margin-bottom:8px;">AI Practice with Alex</div>
+      <div style="font-size:14px;color:#4a6fa5;line-height:1.6;">800+ real questions from Google, Meta, Anthropic. Strict scoring on structure, depth, metrics — not vibes.</div>
+    </div>
+    <div style="background:rgba(255,255,255,.85);border:1px solid rgba(180,210,255,.4);border-radius:18px;padding:24px;box-shadow:0 4px 28px rgba(13,31,60,.07);">
+      <div style="font-size:28px;margin-bottom:12px;">📈</div>
+      <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:#0d1f3c;margin-bottom:8px;">Performance Analytics</div>
+      <div style="font-size:14px;color:#4a6fa5;line-height:1.6;">Track structure, depth, fillers, pace across sessions. See exactly where you improve — visible only to you.</div>
+    </div>
+    <div style="background:rgba(255,255,255,.85);border:1px solid rgba(180,210,255,.4);border-radius:18px;padding:24px;box-shadow:0 4px 28px rgba(13,31,60,.07);">
+      <div style="font-size:28px;margin-bottom:12px;">👥</div>
+      <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:#0d1f3c;margin-bottom:8px;">Focused Peer Network</div>
+      <div style="font-size:14px;color:#4a6fa5;line-height:1.6;">Match with PMs targeting the same companies and domains. Practice together, swap honest feedback.</div>
+    </div>
+    <div style="background:rgba(255,255,255,.85);border:1px solid rgba(180,210,255,.4);border-radius:18px;padding:24px;box-shadow:0 4px 28px rgba(13,31,60,.07);">
+      <div style="font-size:28px;margin-bottom:12px;">📝</div>
+      <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:#0d1f3c;margin-bottom:8px;">References That Matter</div>
+      <div style="font-size:14px;color:#4a6fa5;line-height:1.6;">After a peer session, request a written reference for your target company. Your peer saw you perform — their word carries weight.</div>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section style="position:relative;z-index:1;padding:0 6% 64px;">
+  <div style="text-align:center;margin-bottom:36px;">
+    <div class="sec-tag">How it works</div>
+    <h2 class="sec-h" style="margin-top:8px;">Practice. Improve. Connect.<br>Get the offer.</h2>
+  </div>
+  <div class="how-grid">
+    <div class="how-step">
+      <div class="how-num">01</div>
+      <div class="how-title">Practice with AI</div>
+      <div class="how-desc">Tell Alex your domain, level, and target company. Get 4 questions with strict scoring after each answer — structure, depth, metrics, judgment.</div>
+    </div>
+    <div class="how-step">
+      <div class="how-num">02</div>
+      <div class="how-title">Track your performance</div>
+      <div class="how-desc">After each session see your strengths, gaps, and one drill. Watch your scores improve over time. Your data is private — only you see it.</div>
+    </div>
+    <div class="how-step">
+      <div class="how-num">03</div>
+      <div class="how-title">Connect with real peers</div>
+      <div class="how-desc">Find PMs targeting the same companies. Practice together, exchange honest feedback, request a written reference. No other platform has this loop.</div>
+    </div>
+  </div>
+</section>
+
+>
