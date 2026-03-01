@@ -338,7 +338,14 @@ footer,.footer-links a{font-size:13px;color:var(--mid);}
 .formula-step strong{color:var(--acc);}
 @media(max-width:768px){
   /* Stack layout */
-  .prep-layout{grid-template-columns:1fr!important;display:block!important;}
+  .prep-layout{display:flex!important;flex-direction:column!important;}
+  .prep-sidebar{width:100%!important;height:auto!important;border-right:none!important;border-bottom:1px solid var(--card-b);background:rgba(240,247,255,.97)!important;position:sticky!important;top:62px!important;z-index:50;}
+  .prep-sb-head{display:none!important;}
+  .prep-nav-items{flex-direction:row!important;overflow-x:auto!important;display:flex!important;padding:0!important;gap:0!important;scrollbar-width:none;}
+  .prep-nav-items::-webkit-scrollbar{display:none!important;}
+  .prep-nav-item{padding:10px 14px!important;border-radius:0!important;white-space:nowrap!important;font-size:13px!important;flex-shrink:0!important;border-bottom:2px solid transparent!important;background:transparent!important;}
+  .prep-nav-item.active{border-bottom:2px solid var(--acc)!important;color:var(--acc)!important;background:transparent!important;}
+  .prep-content{padding:16px!important;}
 
   /* Sidebar: horizontal scrollable tabs, not overlapping */
   .prep-sidebar{
@@ -553,23 +560,23 @@ footer,.footer-links a{font-size:13px;color:var(--mid);}
       <div class="prep-h">You're 20 minutes from ready.</div>
       <div class="prep-sub">Work through each section in order. Then launch the live copilot.</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;">
+        <div style="background:rgba(0,87,255,.06);border:1px solid rgba(0,87,255,.2);border-radius:var(--r);padding:20px;cursor:pointer;" onclick="switchSection('voice')">
+          <div style="font-size:24px;margin-bottom:8px;">🎤</div>
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:5px;">Voice Practice</div>
+          <div style="font-size:13px;color:var(--mid);">AI interviewer · Strict scoring</div>
+        </div>
         <div style="background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);padding:20px;cursor:pointer;" onclick="switchSection('star')">
           <div style="font-size:24px;margin-bottom:8px;">⭐</div>
-          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:5px;">STAR Stories</div>
-          <div style="font-size:13px;color:var(--mid);">5 ready-to-use stories with key metrics highlighted</div>
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:5px;">Cases</div>
+          <div style="font-size:13px;color:var(--mid);">5 ready-to-use stories with key metrics</div>
         </div>
         <div style="background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);padding:20px;cursor:pointer;" onclick="switchSection('qa')">
           <div style="font-size:24px;margin-bottom:8px;">❓</div>
           <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:5px;">Q&A Bank</div>
           <div style="font-size:13px;color:var(--mid);">12 likely questions with answer frameworks</div>
         </div>
-        <div style="background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);padding:20px;cursor:pointer;" onclick="switchSection('voice')">
-          <div style="font-size:24px;margin-bottom:8px;">🎤</div>
-          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:5px;">Voice Practice</div>
-          <div style="font-size:13px;color:var(--mid);">AI interviewer · Real-time feedback</div>
-        </div>
         <div style="background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);padding:20px;cursor:pointer;" onclick="launchCopilotFromPrep()">
-          <div style="font-size:24px;margin-bottom:8px;">⚡</div>
+          <div style="font-size:24px;margin-bottom:8px;">👥</div>
           <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:5px;">Find Practice Peer</div>
           <div style="font-size:13px;color:var(--mid);">Match with an AI PM peer in your domain</div>
         </div>
