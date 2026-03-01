@@ -268,6 +268,25 @@ footer,.footer-links a{font-size:13px;color:var(--mid);}
 @media(max-width:640px){
   .nav-right .nav-txt-link{display:none;}
   .btn-p,.btn-s{padding:11px 20px;font-size:14px;}
+
+  /* Interview page mobile fixes */
+  #sim-config > div {padding:20px 16px!important;}
+  #sim-config [style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns:1fr!important;
+  }
+  #sim-live {padding:20px 16px!important;}
+  #floatStop button {
+    padding:14px 32px!important;
+    font-size:15px!important;
+    width:calc(100% - 32px)!important;
+  }
+  #floatStop {bottom:16px!important;}
+  .cfg-grid {grid-template-columns:1fr!important;}
+
+  /* What gets measured grid */
+  [style*="grid-template-columns:1fr 1fr 1fr"] {
+    grid-template-columns:1fr!important;
+  }
 }
 
 /* page-level accent */
@@ -461,7 +480,7 @@ footer,.footer-links a{font-size:13px;color:var(--mid);}
   <div id="sim-config">
   <div style="background:#fff;border:1px solid rgba(180,210,255,.4);border-radius:20px;padding:28px;box-shadow:0 8px 40px rgba(13,31,60,.08);margin-bottom:20px;">
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+    <div class="cfg-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
 
       <!-- Domain -->
       <div>
@@ -661,7 +680,7 @@ async function startSimulator(){
       overrides: {
         agent: {
           prompt: {
-            prompt: `You are Alex, a Senior AI PM interviewer. The candidate is a ${level} PM targeting ${company} in the ${domain} domain. Session type: ${type}. Start immediately — no introductions, no background questions. Ask 4 questions rotating: AI Product Sense, ML Fundamentals, Metrics, Tradeoffs. After each answer: Score X/10. What worked: [1 sentence]. What was missing: [1 sentence]. Then next question immediately. After 4 questions: overall score, top strength, biggest gap, one drill.`
+            prompt: `You are Alex, a senior AI PM interviewer. The candidate is a ${level} PM targeting ${company} in the ${domain} domain. Session: ${type}. VOICE: Speak naturally like a real interviewer. Never say "Question one" or number questions. Use natural transitions: "Let's start with...", "Good. Now...", "Next I want to explore...", "Last one:". FLOW: Ask 4 questions covering AI Product Sense, ML Fundamentals, Metrics, Tradeoffs. After each answer: "Score: X out of 10. What landed: [1 sentence]. What was missing: [1 sentence]." Then next question. RULES: No introductions. No "are you ready". No restating the answer. If no metric named, interrupt: "Can you give me a specific number there?" After all 4: overall score, one strength, one gap, one drill.`
           },
           firstMessage: `Hi, I'm Alex — here's your first question: You're a ${level} PM at ${company}. How would you define the north star metric for their core AI product?`
         }
