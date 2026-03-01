@@ -352,6 +352,10 @@ footer,.footer-links a{font-size:13px;color:var(--mid);}
   }
   .prep-sidebar-header{display:none!important;}
   .prep-sb-head{display:none!important;}
+  /* Subnav fix on mobile */
+  .subnav{height:auto;min-height:36px;flex-wrap:nowrap;overflow-x:auto;padding:0 8px;}
+  .subnav-home span{display:none;}
+  .sub-div{display:none;}
 
   .prep-nav-items{
     display:flex!important;flex-direction:row!important;
@@ -375,6 +379,10 @@ footer,.footer-links a{font-size:13px;color:var(--mid);}
     background:transparent!important;
   }
   .prep-nav-external{display:none!important;}
+  /* Hide bottom sidebar links on mobile - already in footer */
+  .prep-sidebar > a[href="peers.html"],
+  .prep-sidebar > a[href="index.html"],
+  .prep-sidebar > div[style*="height:1px"]{display:none!important;}
 
   /* Content: full width, no overlap */
   .prep-content{
@@ -527,10 +535,10 @@ footer,.footer-links a{font-size:13px;color:var(--mid);}
       <div class="prep-sb-title" id="prepModeTitle">Prep Suite</div>
       <div class="prep-sb-sub" id="prepModeSub">Prapp</div>
     </div>
-    <a class="prep-nav-item active" data-sec="overview" onclick="switchSection('overview')">📋 Overview</a>
-    <a class="prep-nav-item" data-sec="star" onclick="switchSection('star')">⭐ STAR Stories</a>
-    <a class="prep-nav-item" data-sec="qa" onclick="switchSection('qa')">❓ Q&A Bank</a>
     <a class="prep-nav-item" data-sec="voice" onclick="switchSection('voice')">🎤 Voice Practice</a>
+    <a class="prep-nav-item active" data-sec="overview" onclick="switchSection('overview')">📋 Overview</a>
+    <a class="prep-nav-item" data-sec="star" onclick="switchSection('star')">⭐ Cases</a>
+    <a class="prep-nav-item" data-sec="qa" onclick="switchSection('qa')">❓ Q&A Bank</a>
     <a class="prep-nav-item" data-sec="brief" onclick="switchSection('brief')">📄 Call Brief</a>
     <div style="height:1px;background:rgba(184,223,254,.4);margin:10px 0;"></div>
     <a class="prep-nav-item" href="peers.html">👥 Find Peers →</a>
