@@ -492,9 +492,9 @@ footer,.footer-links a{font-size:13px;color:var(--mid);}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
         <div>
           <label style="display:block;font-size:11px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Your Domain</label>
-          <input id="cfg-domain" type="text" list="domain-list" placeholder="e.g. AI Agents, Fintech"
+          <input id="cfg-domain" type="text" list="domain-list" placeholder="Your domain"
             style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid rgba(180,210,255,.5);font-size:13px;font-family:'DM Sans',sans-serif;color:var(--ink);background:#fff;outline:none;"
-            value="AI / ML Products">
+            value="">
           <datalist id="domain-list">
             <option value="AI / ML Products"><option value="E-commerce / Marketplace">
             <option value="Fintech / Payments"><option value="Developer Tools / API">
@@ -529,9 +529,9 @@ footer,.footer-links a{font-size:13px;color:var(--mid);}
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px;">
       <div>
         <label style="display:block;font-size:11px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Company</label>
-        <input id="cfg-company" type="text" list="company-list" placeholder="e.g. Anthropic, OpenAI"
+        <input id="cfg-company" type="text" list="company-list" placeholder="Target company"
           style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid rgba(180,210,255,.5);font-size:13px;font-family:'DM Sans',sans-serif;color:var(--ink);background:#fff;outline:none;"
-          value="Anthropic">
+          value="">
         <datalist id="company-list">
           <option value="Anthropic"><option value="OpenAI"><option value="Google DeepMind">
           <option value="Meta AI"><option value="Microsoft"><option value="Google">
@@ -872,14 +872,32 @@ async function startSimulator() {
   const prompt = buildPrompt(currentSessionQuestions, config);
   const firstQ = currentSessionQuestions[0];
 
+  // Build question block to append to dashboard prompt
+  const questionBlock = currentSessionQuestions.map((q, i) =>
+    `${i+1}. [${q.cat.replace(/_/g,' ')}] ${q.q}`
+  ).join('\n');
+
   try {
     await navigator.mediaDevices.getUserMedia({ audio: true });
     const { Conversation } = await import('https://cdn.jsdelivr.net/npm/@11labs/client@latest/+esm');
 
     simConversation = await Conversation.startSession({
       agentId: 'agent_4701kj67g4e2f148ymsjm8529xg6',
+
+      // Dynamic variables — resolve {{placeholders}} in dashboard prompt
+      dynamicVariables: {
+        user_level: config.level,
+        user_domain: config.domain,
+        target_company: config.company,
+        session_type: config.type,
+        user_experience: config.experience || 'Not provided',
+        role_title: config.roleTitle || 'Not specified',
+        role_description: config.roleDesc || 'Not provided',
+      },
+
       overrides: {
         agent: {
+          // Full prompt with questions — works whether SDK appends or replaces
           prompt: { prompt },
           firstMessage: `Here's your first question: ${firstQ.q}`
         }
