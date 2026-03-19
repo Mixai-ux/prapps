@@ -696,6 +696,7 @@ const Q_BANK = [{"id":1,"q":"Design a smart fridge for Google","cat":"product_se
 // ═══════════════════════════════════════════════════════════
 function selectQuestions(config) {
   const { domain, level, company, type } = config;
+  const roleDesc = (config.roleDesc || '').toLowerCase();
   const diffMap = {
     'Junior PM': ['Easy','Medium'],
     'Mid-level PM': ['Easy','Medium','Hard'],
@@ -706,9 +707,10 @@ function selectQuestions(config) {
   };
   const allowedDiffs = diffMap[level] || ['Medium','Hard'];
 
-  // Determine which categories to draw from
+  // Smart category selection for Full Mix based on role description
+  let targetCats;
   const catMap = {
-    'full mix (Product Sense + ML + Metrics + Judgment)': ['product_sense','ml_technical','metrics_analytics','strategy'],
+    'full mix (Product Sense + ML + Metrics + Judgment)': null, // handled below
     'Product Sense only': ['product_sense','product_sense','product_sense','product_sense'],
     'ML Fundamentals only': ['ml_technical','ml_technical','ml_technical','ml_technical'],
     'Metrics & Analytics only': ['metrics_analytics','metrics_analytics','metrics_analytics','metrics_analytics'],
@@ -718,7 +720,42 @@ function selectQuestions(config) {
     'Ethics / Responsible AI only': ['ethical_ai','ethical_ai','ethical_ai','ethical_ai'],
     'Case Studies only': ['case_studies','case_studies','case_studies','case_studies'],
   };
-  const targetCats = catMap[type] || ['product_sense','ml_technical','metrics_analytics','ethical_ai'];
+
+  if (catMap[type] !== null && catMap[type] !== undefined) {
+    targetCats = catMap[type];
+  } else {
+    // Full Mix — pick 4 categories that best match the role
+    // Detect role signals from description
+    const hasML = /\b(ml|machine learning|model|training|neural|bert|llm|fine-tun|deep learning)\b/i.test(roleDesc);
+    const hasStrategy = /\b(strategy|transformation|roadmap|stakeholder|change management|cross-functional|business unit)\b/i.test(roleDesc);
+    const hasMetrics = /\b(metric|kpi|roi|measure|analytics|data|performance|baseline|impact)\b/i.test(roleDesc);
+    const hasEthics = /\b(ethic|responsible|bias|fairness|safety|compliance|regulatory|governance)\b/i.test(roleDesc);
+    const hasGenAI = /\b(generative|gpt|chatgpt|llm|prompt|ai tool|ai solution|ai integration|ai-driven)\b/i.test(roleDesc);
+    const hasCases = /\b(workflow|deployment|implementation|adoption|integration|process)\b/i.test(roleDesc);
+
+    // Always include product_sense as slot 1
+    targetCats = ['product_sense'];
+
+    // Pick best 3 matches for remaining slots
+    const candidates = [];
+    if (hasML) candidates.push('ml_technical');
+    if (hasGenAI) candidates.push('genai_llm');
+    if (hasStrategy) candidates.push('strategy');
+    if (hasMetrics) candidates.push('metrics_analytics');
+    if (hasEthics) candidates.push('ethical_ai');
+    if (hasCases) candidates.push('case_studies');
+
+    // Remove duplicates with product_sense, fill to 4
+    const remaining = candidates.filter(c => c !== 'product_sense');
+    // Take up to 3, pad with defaults if needed
+    const defaults = ['strategy','metrics_analytics','behavioral_leadership','ml_technical','genai_llm'];
+    while (remaining.length < 3) {
+      const next = defaults.find(d => !remaining.includes(d) && d !== 'product_sense');
+      if (next) remaining.push(next);
+      else break;
+    }
+    targetCats = targetCats.concat(remaining.slice(0, 3));
+  }
 
   // Get session history to avoid repeats
   const history = getSessionHistory();
@@ -799,6 +836,8 @@ VOICE STYLE: Professional, sharp, no fluff. Speak naturally — never number que
 
 QUESTIONS — ask these 4 questions IN THIS ORDER:
 ${qList}
+
+IMPORTANT: These questions are starting points. If the candidate provided a role description, adapt each question to their specific role context. For example, if the question is about metrics but the role is about workflow optimization, ask about metrics for workflow optimization — not generic product metrics. Make every question feel like it was written for THIS specific interview.
 
 AFTER EACH ANSWER:
 1. Ask ONE natural follow-up that probes the weakest part. Examples: "What specific metric would tell you that's working?", "How would you validate that assumption?", "What's the biggest risk?". Strong candidate → probing follow-up. Weak candidate → clarification on structure or metrics.
@@ -899,7 +938,7 @@ async function startSimulator() {
         agent: {
           // Full prompt with questions — works whether SDK appends or replaces
           prompt: { prompt },
-          firstMessage: `Let's start — ${firstQ.q}`
+          firstMessage: `Hi, I'm Jess, I'll be your AI Product Manager interview coach today. Let's get into it. So, ${firstQ.q}`
         }
       },
       onConnect: () => {
