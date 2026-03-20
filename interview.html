@@ -834,12 +834,14 @@ function buildPrompt(questions, config) {
 
 VOICE STYLE: Professional, sharp, no fluff. Speak naturally — never number questions mechanically. Use transitions: "So tell me...", "Good. Now...", "I want to explore something different...", "One more for you...". Match the candidate's language automatically.
 
-YOUR FIRST MESSAGE MUST BE EXACTLY: "Hi, I'm Jess, I'll be your AI Product Manager interview coach today. Let's get into it." Then immediately transition into the first question below. Do not wait for a response after the greeting.
+GENDER-NEUTRAL LANGUAGE: You are a gender-neutral AI coach. In ALL languages, never use masculine or feminine verb forms, adjectives, or pronouns when referring to yourself. Always choose impersonal, neutral, or passive constructions. This applies to every language you speak — no exceptions.
+
+YOUR FIRST MESSAGE MUST BE EXACTLY: "Hi, I'm Jess, I'll be your AI Product Manager interview coach today. Let's get into it." Then immediately transition into the first question. Do not wait for a response after the greeting.
 
 QUESTIONS — ask these 4 questions IN THIS ORDER:
 ${qList}
 
-IMPORTANT: These questions are starting points. If the candidate provided a role description, adapt each question to their specific role context. For example, if the question is about metrics but the role is about workflow optimization, ask about metrics for workflow optimization — not generic product metrics. Make every question feel like it was written for THIS specific interview.
+QUESTION ADAPTATION (MANDATORY): These questions are starting points. You MUST adapt each question to fit BOTH the candidate's experience AND the target role. If the candidate has e-commerce background and targets AI consulting, ask about AI transformation in e-commerce — not abstract ML theory. If the role mentions workflow optimization, ask about metrics for workflows — not generic product metrics. Every question must feel written for THIS candidate and THIS role.
 
 AFTER EACH ANSWER:
 1. Ask ONE natural follow-up that probes the weakest part. Examples: "What specific metric would tell you that's working?", "How would you validate that assumption?", "What's the biggest risk?". Strong candidate → probing follow-up. Weak candidate → clarification on structure or metrics.
@@ -996,6 +998,13 @@ function onSessionEnd(config) {
     duration,
   };
   saveSession(session);
+
+  // Hide live panel and stop button
+  document.getElementById('sim-live').style.display = 'none';
+  document.getElementById('floatStop').style.display = 'none';
+  const sq = document.getElementById('selectedQs');
+  if (sq) sq.style.display = 'none';
+
   showSessionSummary(session);
 }
 
@@ -1055,14 +1064,15 @@ function showHistory() {
         return `
           <div style="padding:10px 12px;border-radius:10px;margin-bottom:6px;background:${i%2===0?'rgba(0,87,255,.03)':'#fff'};border:1px solid rgba(180,210,255,.15);">
             <div style="display:flex;justify-content:space-between;align-items:center;">
-              <div>
+              <div style="flex:1;">
                 <div style="font-size:13px;font-weight:600;color:var(--ink);">${s.config?.company||'Practice'} · ${s.config?.level||''}</div>
                 <div style="font-size:12px;color:var(--mid);margin-top:2px;">${cats}</div>
               </div>
-              <div style="text-align:right;">
+              <div style="text-align:right;margin-right:10px;">
                 <div style="font-size:12px;color:var(--mid);">${dateStr} ${timeStr}</div>
                 <div style="font-size:12px;color:var(--mid);">${mins}m</div>
               </div>
+              <button onclick='repeatSession(${JSON.stringify(s.config).replace(/'/g,"&#39;")})' style="padding:6px 14px;border-radius:8px;background:rgba(0,87,255,.08);border:1px solid rgba(0,87,255,.2);color:var(--acc);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;">↻ Repeat</button>
             </div>
           </div>`;
       }).join('')}
@@ -1072,8 +1082,31 @@ function showHistory() {
 }
 
 async function endSimulator() {
-  if (simConversation) { await simConversation.endSession(); simConversation = null; }
-  // Don't reset immediately — let onDisconnect handle showing summary
+  if (simConversation) {
+    try { await simConversation.endSession(); } catch(e) { console.error(e); }
+    simConversation = null;
+  }
+  // Always hide the stop button even if disconnect fails
+  document.getElementById('floatStop').style.display = 'none';
+}
+
+function repeatSession(config) {
+  // Fill form with saved config values
+  if (config.domain) document.getElementById('cfg-domain').value = config.domain;
+  if (config.level) document.getElementById('cfg-level').value = config.level;
+  if (config.company) document.getElementById('cfg-company').value = config.company;
+  if (config.type) document.getElementById('cfg-type').value = config.type;
+  if (config.experience) document.getElementById('cfg-experience').value = config.experience;
+  if (config.roleTitle) document.getElementById('cfg-role-title').value = config.roleTitle;
+  if (config.roleDesc) document.getElementById('cfg-role-desc').value = config.roleDesc;
+
+  // Show config, hide history
+  resetSimulator();
+  const hp = document.getElementById('historyPanel');
+  if (hp) hp.style.display = 'none';
+
+  // Scroll to top and auto-start
+  window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 function resetSimulator() {
